@@ -9,20 +9,47 @@ from .UnknownVariable import UnknownVariable
 
 
 class Putinar:
-    """ A class that performs putinar algorithm.
+    """ 
+    A class that performs the constraint transformation according to Putinar
+    Theorem.
 
-        Attributes:
-                variables ([UnknownVariable]): The list of variables of the polynomials.
-                LHS ([PolynomialConstraint]): The list of left hand side constraints in farkas algorithm
-                RHS (PolynomialConstraint) : The right hand side constraint in algorithm
-                max_d_for_sat (int) : maximum degree of monoids when finding sat constraints
-                max_d_for_unsat (int) : maximum degree of monoids when finding unsat constraints
-                max_d_for_unsat_strict (int) : maximum degree of monoids when finding unsat constraints in strict case
-                degree_for_new_var (int) : degree of new variable that is generated for strict case in right hand side of equality
+    Parameters
+    ----------
+    variables : List[UnknownVariable]
+        The list of variables of the polynomials.
+    LHS : List[PolynomialConstraint]
+        The list of left hand side constraints in farkas algorithm
+    RHS : PolynomialConstraint
+        The right hand side constraint in algorithm
+    max_d_for_sat : int, optional
+        maximum degree of monoids when finding sat constraints, by default 0
+    max_d_for_unsat : int, optional
+        maximum degree of monoids when finding unsat constraints, by default 0
+    max_d_for_unsat_strict : int, optional
+        maximum degree of monoids when finding unsat constraints in strict case, by default 0
+    degree_for_new_var : int, optional
+        degree of new variable that is generated for strict case in right hand side of equality, by default 0
+
+    Attributes
+    ----------
+    variables : List[UnknownVariable]
+        The list of variables of the polynomials.
+    LHS : List[PolynomialConstraint]
+        The list of left hand side constraints in farkas algorithm
+    RHS : PolynomialConstraint
+        The right hand side constraint in algorithm
+    max_d_for_sat : int
+        maximum degree of monoids when finding sat constraints
+    max_d_for_unsat : int
+        maximum degree of monoids when finding unsat constraints
+    max_d_for_unsat_strict : int
+        maximum degree of monoids when finding unsat constraints in strict case
+    degree_for_new_var : int
+        degree of new variable that is generated for strict case in right hand side of equality
     """
 
-    def __init__(self, variables, LHS: List[PolynomialConstraint], RHS: PolynomialConstraint,
-                 max_d_for_sat=0, max_d_for_unsat=0, max_d_for_unsat_strict=0, degree_for_new_var=0):
+    def __init__(self, variables: List[UnknownVariable], LHS: List[PolynomialConstraint], RHS: PolynomialConstraint,
+                 max_d_for_sat: int = 0, max_d_for_unsat: int = 0, max_d_for_unsat_strict: int = 0, degree_for_new_var: int = 0):
         self.variables = variables
         self.RHS = RHS
         self.LHS = LHS
@@ -32,10 +59,21 @@ class Putinar:
         self.degree_for_new_var = degree_for_new_var
 
     def get_lower_triangular_matrix(self, dim: int) -> Tuple[List[List[Polynomial]], List[CoefficientConstraint]]:
-        """this function generates a lower triangular matrix L with positive elements in diagonal and returns L * L^T
+        """
+        This function generates a lower triangular matrix `L` with positive
+        elements in diagonal and returns `L * L^T`.
 
-        :param dim: The dimension of the generated matrix
-        :return: a positive semideinite matrix with corresponding constraints.
+        Parameters
+        ----------
+        dim : int
+            The dimension of the generated matrix
+
+        Returns
+        -------
+        List[List[Polynomial]]
+            A positive semidefinite matrix.
+        List[CoefficientConstraint]
+            List of constraints on the diagonal elements of the matrix 
         """
         matrix = np.array(
             [[Polynomial(self.variables, []) for __ in range(dim)]
@@ -53,11 +91,20 @@ class Putinar:
 
     @staticmethod
     def get_monoids(variables, max_d: int) -> List[Polynomial]:
-        """ This function gives the monoid of a maximum degree on set of variables.
+        """ 
+        This function gives the monoid of a maximum degree on set of variables.
 
-        :param variables: the set of variable
-        :param max_d: maximum degree of generated monoids
-        :return: list of monoids defined on the set of variable
+        Parameters
+        ----------
+        variables : List[UnknownVariable]
+            The set of variables
+        max_d : int
+            Maximum degree of generated monoids
+
+        Returns
+        -------
+        List[Polynomial]
+            List of monoids defined on the set of variable
         """
         all_monoid = []
         for mask in range((max_d + 1) ** len(variables)):
@@ -73,10 +120,21 @@ class Putinar:
         return all_monoid
 
     def get_sum_of_square(self, max_d: int) -> Tuple[Polynomial, List[CoefficientConstraint]]:
-        """ the function generate a new sum-of-square template on set of class variable and given maximum degree
+        """ 
+        The function generates a new sum-of-square template on the set of class 
+        variables and given maximum degree.
 
-        :param max_d: maximum degree of the generated template
-        :return: polynomial represents the sum-of-square template and corresponding constraints.
+        Parameters
+        ----------
+        max_d : int
+            Maximum degree of the generated templates
+
+        Returns
+        -------
+        Polynomial
+            Polynomial represents the sum-of-square template
+        List[CoefficientConstraint]
+            List of constraints on the coefficients of the template
         """
         monoid = np.array(Putinar.get_monoids(
             self.variables, (max_d // 2))).reshape(1, -1)
@@ -96,13 +154,22 @@ class Putinar:
         return Polynomial(poly_with_more_degree.variables, monomials), constraint
 
     def get_poly_sum(self, max_d: int) -> Tuple[Polynomial, List[CoefficientConstraint]]:
-        """ This function returns a polynomial y_0(rhs is struct) + h_0 + h_1*g_1 ... + h_n*g_n where h_i are
-        sum-of-square polynomial and g_i are left hand side polynomials
+        """ 
+        This function returns a polynomial `y_0(rhs is struct) + h_0 + h_1*g_1 ... + h_n*g_n`
+        where `h_i` are sum-of-square polynomial and `g_i` are left hand side polynomials.
 
-        :param max_d: maximum degree of each sum-of-square
-        :return: polynomial of sum of all left hand side with new variables and corresponding constraints.
+        Parameters
+        ----------
+        max_d : int
+            Maximum degree of the generated templates
+
+        Returns
+        -------
+        Polynomial
+            Polynomial of sum of all left hand side with new variables
+        List[CoefficientConstraint]
+            List of constraints on the coefficients of the templates
         """
-
         polynomial_of_sum, all_constraints = self.get_sum_of_square(max_d)
         strict_poly = Solver.get_constant_polynomial(self.variables, 0)
         if self.RHS.is_strict():
@@ -131,22 +198,35 @@ class Putinar:
                 strict_poly.monomials[0].coefficient, '>'))
         return polynomial_of_sum, all_constraints
 
-    def get_SAT_constraint(self):
-        """ a function to find the constraints when the LHS => RHS is satisfiable
+    def get_SAT_constraint(self) -> List[CoefficientConstraint]:
+        """ 
+        A function to find the constraints when the LHS => RHS is satisfiable
 
-        :return: list of coefficient constraints when it is satisfiable
+        Returns
+        -------
+        List[CoefficientConstraint]
+            List of coefficient constraints when it is satisfiable
         """
         polynomial_of_sum, constraints = self.get_poly_sum(self.max_d_for_sat)
         return constraints + Solver.find_equality_constraint(polynomial_of_sum, self.RHS.polynomial)
 
-    def get_UNSAT_constraint(self, need_strict=False):
-        """ a function to find the constraints when it is not satisfiable.\n
-        two set of constraint can be generated:\n
-         1) LHS => -1 >= 0\n
-         2) w_j^2*d = h_1*(g_1 - w_1^2) + h_2*(g_2 - w_2^2) ... h_n*(g_n - w_n^2) for some j where g_j is strict  \n
+    def get_UNSAT_constraint(self, need_strict=False) -> List[CoefficientConstraint]:
+        """ 
+        A function to find the constraints when it is not satisfiable.
 
-        :param need_strict: determine which set of constraint to generate.
-        :return: list of coefficient constraints when it is not satisfiable
+        Two set of constraint can be generated:
+            1. `LHS => -1 >= 0`
+            2. `w_j^2*d = h_1*(g_1 - w_1^2) + h_2*(g_2 - w_2^2) ... h_n*(g_n - w_n^2)` for some `j` where `g_j` is strict 
+
+        Parameters
+        ----------
+        need_strict : bool, optional
+            Determine which set of constraint to generate, by default False
+
+        Returns
+        -------
+        List[CoefficientConstraint]
+            List of coefficient constraints when it is not satisfiable
         """
         if need_strict:
             return self.handel_strict(self.max_d_for_unsat_strict, self.degree_for_new_var)
@@ -157,8 +237,20 @@ class Putinar:
                                                                  self.RHS.polynomial.variables, '-1'))
 
     def handel_strict(self, max_d: int, power_of_new_var: int) -> List[List[CoefficientConstraint]]:
-        """ it handles the second form of unsatisfiablity
+        """ 
+        Handles the second form of unsatisfiablity
 
+        Parameters
+        ----------
+        max_d : int
+            Maximum degree of the generated templates
+        power_of_new_var : int
+            Power of the new variable that is generated for strict case
+
+        Returns
+        -------
+        List[List[CoefficientConstraint]]
+            List of coefficient constraints when it is not satisfiable
         :param max_d: maximum degree for template polynomials
         :param power_of_new_var: power of newly generated variables
         :return: list of constraint for each equality
@@ -199,11 +291,21 @@ class Putinar:
 
     @staticmethod
     def get_general_template(all_variables: List[UnknownVariable], all_monoids: List[Polynomial]) -> List[Polynomial]:
-        """ generate a new variable for every monoid and multiply it and return the sum of all.
+        """
+        Generate a new variable for every monoid and multiply it and return the
+        sum of all.
 
-        :param all_variables: variable of the polynomials
-        :param all_monoids: monoids which should be multiply by new variable
-        :return: A polynomial of the sum of all monoid multiplied by new variable
+        Parameters
+        ----------
+        all_variables : List[UnknownVariable]
+            Variables of the polynomials
+        all_monoids : List[Polynomial]
+            Monoids which should be multiplied by new variable
+
+        Returns
+        -------
+        Polynomial
+            A polynomial of the sum of all monoid multiplied by new variables
         """
         new_unknown_variables = [
             Solver.get_variable_polynomial(

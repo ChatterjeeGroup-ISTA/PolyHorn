@@ -7,12 +7,27 @@ from .UnknownVariable import UnknownVariable
 
 
 class Farkas:
-    """ A class that performs farkas algorithm.
+    """
+    A class that performs the constraint transformation according to Farkas
+    Lemma.
 
-        Attributes:
-                variables ([UnknownVariable]): The list of variables of the polynomials.
-                LHS ([PolynomialConstraint]): The list of left hand side constraints in farkas algorithm
-                RHS (PolynomialConstraint) : The right hand side constraint in algorithm
+    Parameters
+    ----------
+    variables : List[UnknownVariable]
+        The list of variables of the polynomials.
+    LHS : List[PolynomialConstraint]
+        The list of left hand side constraints in farkas algorithm
+    RHS : PolynomialConstraint
+        The right hand side constraint in algorithm
+
+    Attributes
+    ----------
+    variables : List[UnknownVariable]
+        The list of variables of the polynomials.
+    LHS : List[PolynomialConstraint]
+        The list of left hand side constraints in farkas algorithm
+    RHS : PolynomialConstraint
+        The right hand side constraint in algorithm
     """
 
     def __init__(self, variables: List[UnknownVariable], LHS: List[PolynomialConstraint], RHS: PolynomialConstraint):
@@ -21,11 +36,20 @@ class Farkas:
         self.LHS = LHS
 
     def get_poly_sum(self, need_strict: bool = False) -> Tuple[Polynomial, CoefficientConstraint]:
-        """ This function returns a polynomial y_0 + y_1*f_1 + y_2*f_2 ...+ y_n*f_n where f_i are left hand side
-        polynomials and y_i are newly created variable in farkas theorem
+        """ 
+        This function returns a polynomial y_0 + y_1*f_1 + y_2*f_2 ...+ y_n*f_n
+        where f_i are left hand side polynomials and y_i are newly created 
+        variable in farkas theorem.
 
-        :param need_strict: is it generated for the 0 > 0 case or not.
-        :return: polynomial of sum of all left hand side with new variables and corresponding constraints.
+        Parameters
+        ----------
+        need_strict : bool, optional
+            Is it generated for the 0 > 0 case or not, by default False
+
+        Returns
+        -------
+        Tuple[Polynomial, CoefficientConstraint]
+            polynomial of sum of all left hand side with new variables and corresponding constraints.
         """
         new_var = Solver.get_variable_polynomial(
             self.variables, 'y0', 'generated_for_Farkas')
@@ -54,21 +78,34 @@ class Farkas:
         return polynomial_of_sum, constraints
 
     def get_SAT_constraint(self) -> List[CoefficientConstraint]:
-        """ a function to find the constraints when the LHS => RHS is satisfiable
+        """ 
+        A function to find the constraints when the LHS => RHS is satisfiable.
 
-        :return: list of coefficient constraints when it is satisfiable
+        Returns
+        -------
+        List[CoefficientConstraint]
+            list of coefficient constraints when it is satisfiable
         """
         polynomial_of_sum, constraints = self.get_poly_sum()
         return Solver.find_equality_constraint(polynomial_of_sum, self.RHS.polynomial) + constraints
 
     def get_UNSAT_constraint(self, need_strict: bool = False) -> List[CoefficientConstraint]:
-        """ a function to find the constraints when it is not satisfiable.\n
-        two set of constraint can be generated:\n
-         1)LHS => -1 >= 0\n
-         2)LHS => 0 > 0\n
+        """ 
+        A function to find the constraints when it is not satisfiable.
 
-        :param need_strict: determine which set of constraint to generate.
-        :return: list of coefficient constraints when it is not satisfiable
+        Two set of constraint can be generated:
+            1. `LHS => -1 >= 0`
+            2. `LHS => 0 > 0`
+
+        Parameters
+        ----------
+        need_strict : bool, optional
+            determine which set of constraint to generate, by default False
+
+        Returns
+        -------
+        List[CoefficientConstraint]
+            list of coefficient constraints when it is not satisfiable
         """
         if need_strict:
             polynomial_of_sum, constraints = self.get_poly_sum(need_strict)
@@ -76,5 +113,4 @@ class Farkas:
                                                    Polynomial(polynomial_of_sum.variables, [])) + constraints
         polynomial_of_sum, constraints = self.get_poly_sum()
         return Solver.find_equality_constraint(polynomial_of_sum,
-                                               Solver.get_constant_polynomial(self.RHS.polynomial.variables, '-1')) + \
-            constraints
+                                               Solver.get_constant_polynomial(self.RHS.polynomial.variables, '-1')) + constraints

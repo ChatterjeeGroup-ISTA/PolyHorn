@@ -3,7 +3,7 @@ import random
 import string
 import uuid
 import os
-from typing import Tuple, Union
+from typing import Tuple, Union, Callable
 
 from pysmt.fnode import FNode
 from pysmt.operators import op_to_str
@@ -179,7 +179,7 @@ def execute(formula: Union[str, PysmtSolver], config: Union[str, dict]) -> Tuple
     return __execute(config, formula, Parser.parse_smt_file)
 
 
-def execute_smt2(smt2: str, config_path: str) -> None:
+def execute_smt2(smt2: str, config_path: str) -> Tuple[str, dict]:
     """
     Execute PolyHorn on the smt2 system
 
@@ -192,14 +192,16 @@ def execute_smt2(smt2: str, config_path: str) -> None:
 
     Returns
     -------
-    Tuple[bool, dict]
-        A tuple with the first element being the satisfiability of the system and the second element being the model
+    str
+        The satisfiability of the system (sat, unsat, unknown)
+    dict
+        The model of the system (if it is satisfiable)
     """
     config = load_config(config_path)
     return __execute(config, smt2, Parser.parse_smt_file)
 
 
-def execute_readable(readable: str, config_path: str):
+def execute_readable(readable: str, config_path: str) -> Tuple[str, dict]:
     """
     Execute PolyHorn on the readable system
 
@@ -212,14 +214,16 @@ def execute_readable(readable: str, config_path: str):
 
     Returns
     -------
-    Tuple[bool, dict]
-        A tuple with the first element being the satisfiability of the system and the second element being the model
+    str
+        The satisfiability of the system (sat, unsat, unknown)
+    dict
+        The model of the system (if it is satisfiable)
     """
     config = load_config(config_path)
     return __execute(config, readable, Parser.parse_readable_file)
 
 
-def __execute(config: dict, input: str, parser_method):
+def __execute(config: dict, input: str, parser_method: Callable) -> Tuple[str, dict]:
     """
     Execute PolyHorn on the input system
 
@@ -234,8 +238,10 @@ def __execute(config: dict, input: str, parser_method):
 
     Returns
     -------
-    Tuple[bool, dict]
-        A tuple with the first element being the satisfiability of the system and the second element being the model
+    str
+        The satisfiability of the system (sat, unsat, unknown)
+    dict
+        The model of the system (if it is satisfiable)
     """
 
     parser = Parser(

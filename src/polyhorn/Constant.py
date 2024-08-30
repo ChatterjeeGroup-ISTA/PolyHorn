@@ -1,17 +1,33 @@
 import os
 import shutil
+from enum import Enum
 from typing import Any
 
 ABS_PATH = os.path.dirname(os.path.abspath(__file__))
 
 
-class Theorem:
-    Farkas = 'farkas'
-    Handelman = 'handelman'
-    Putinar = 'putinar'
+class Theorem(Enum):
+    """
+    Theorem is a class which is used to define the type of theorems that can be used in the solver.
+    """
+    FARKAS = 'farkas'
+    HANDELMAN = 'handelman'
+    PUTINAR = 'putinar'
 
 
 class AvailabilityDict(dict):
+    """
+    AvailabilityDict is a class which is used to define a dictionary that can
+    be used to hierarchically check the availability of commands in the system,
+    given an array of possible commands.
+    
+    Parameters
+    ----------
+    *args : Any
+        The arguments that are passed to the dictionary.
+    **kwargs : Any
+        The keyword arguments that are passed to the dictionary.
+    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -20,6 +36,19 @@ class AvailabilityDict(dict):
                 self[key] = [value]
 
     def __getitem__(self, key: Any) -> Any:
+        """
+        Retrieve the first available command from the list of possible commands.
+
+        Parameters
+        ----------
+        key : Any
+            The key to be retrieved from the dictionary.
+
+        Returns
+        -------
+        Any
+            The first available command from the list of possible commands.
+        """
         possible_values = super().__getitem__(key)
         for value in possible_values:
             if AvailabilityDict.available(value):
@@ -37,8 +66,8 @@ class AvailabilityDict(dict):
 
 
 class Constant:
-    """This class consist of some constant dictionaries which are used for configuration of the solvers.
-
+    """
+    This class consist of some constant dictionaries which are used for configuration of the solvers.
     """
     options = {
         'z3': '(set-option :print-success false)\n' +
@@ -46,7 +75,6 @@ class Constant:
         'mathsat': '(set-option :print-success false)\n' +
                    '(set-option :produce-models true)\n',
         'default': ''
-
     }
 
     default_path = AvailabilityDict({

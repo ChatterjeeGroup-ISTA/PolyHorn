@@ -1,31 +1,59 @@
+from __future__ import annotations
+
 from typing import List
 
 
 class DNF:
-    """A class that represents disjunctive normal form.
+    """
+    A class that represents disjunctive normal form.
 
-        Attributes:
-            literals ([]): list of elements that the or of these elements form the DNF.
+    Parameters
+    ----------
+    literals : List
+        List of literals that are in DNF.
+
+    Attributes
+    ----------
+    literals : List
+        List of literals that are in DNF.
     """
 
     def __init__(self, literals: List):
         self.literals = literals
 
-    def __or__(self, other):
-        """ Or two DNF.\n
+    def __or__(self, other: DNF) -> DNF:
+        """ 
+        Or two DNF.
+
         Or of two DNF is the union of literals of each.
 
-        :param other: the other DNF that should be or with this class.
-        :return: new DNF that is or of two DNF.
+        Parameters
+        ----------
+        other : DNF
+            The other DNF that should be or with this class.
+
+        Returns
+        -------
+        DNF
+            New DNF that is or of two DNF.
         """
         return DNF(self.literals + other.literals)
 
-    def __and__(self, other):
-        """ And two DNF.\n
+    def __and__(self, other: DNF) -> DNF:
+        """ 
+        And two DNF.
+
         The result is a DNF where each of the literal is the union of two literal in each DNF.
 
-        :param other: the other DNF that should be and with this class.
-        :return: new DNF that is and of two DNF.
+        Parameters
+        ----------
+        other : DNF
+            The other DNF that should be and with this class.
+
+        Returns
+        -------
+        DNF
+            New DNF that is and of two DNF.
         """
         if len(self.literals) == 0:
             return DNF(other.literals)
@@ -38,11 +66,17 @@ class DNF:
                 literal_list.append(first_literal + second_literal)
         return DNF(literal_list)
 
-    def __neg__(self):
-        """ negate a DNF\n For negating a DNF it is sufficient to negate all its literal and And them together.
-        negate a literal makes a DNF.
+    def __neg__(self) -> DNF:
+        """ 
+        Negate a DNF
 
-            :return: a DNF that is the negated form of the DNF.
+        For negating a DNF it is sufficient to negate all its literal and And 
+        them together. Negate a literal makes a DNF.
+
+        Returns
+        -------
+        DNF
+            New DNF that is negation of the previous DNF.
         """
         result_DNF = DNF([])
         for literal in self.literals:
@@ -53,9 +87,13 @@ class DNF:
         return result_DNF
 
     def __str__(self) -> str:
-        """ convert DNF to string.
+        """
+        Convert DNF to string.
 
-            :return: string format of the class.
+        Returns
+        -------
+        str
+            String format of the DNF.
         """
         res = ''
         for literal in self.literals:
@@ -64,9 +102,13 @@ class DNF:
         return '(\n' + res + ')\n'
 
     def convert_to_preorder(self) -> str:
-        """ convert DNF to preorder format.
+        """
+        Convert DNF to preorder format.
 
-        :return: string in preorder format of the class.
+        Returns
+        -------
+        str
+            String in preorder format of the DNF.
         """
         res = '( or '
         for literal in self.literals:

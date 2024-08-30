@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from fractions import Fraction
-from typing import List
+from typing import List, Union
 
 import numpy as np
 
@@ -7,52 +9,103 @@ from .UnknownVariable import UnknownVariable
 
 
 class Element:
-    """ A class that represent the elements\n
-        It consists a constant and a set of variables which should be multiplied together to form the element.
-        For example 2*a*b, 1/2*c*c*c are elements
+    """
+    A class that represent an element.
 
-        Attributes:
-            constant (Fraction): It is the constant to multiply with other variables
-            variables ([UnknownVariable]): The sorted list of variables that should be multiplied together
+    It consists a rational constant and a set of variables which should be
+    multiplied together to form the element.
 
+    Examples
+    -------
+    - The term `2*a*b` is an element where 2 is the constant and a, b are variables.
+        
+        >>> Element(2, [UnknownVariable('a'), UnknownVariable('b')])
+        
+    - The term `1/2*c*c*c` is an element where 1/2 is the constant and c is the variable.
+        
+        >>> Element(1/2, [UnknownVariable('c'), UnknownVariable('c'), UnknownVariable('c')])
+        
+
+    Parameters
+    ----------
+    constant : Union[float, str, Fraction]
+        It is the constant to multiply with other variables
+    variables : List[UnknownVariable], optional
+        The sorted list of variables that should be multiplied together, by default []
+
+    Attributes:
+    ----------
+    constant : Fraction
+        The constant of the element
+    variables : List[UnknownVariable]
+        The sorted list of variables that should be multiplied together
     """
 
-    def __init__(self, constant, variables: List[UnknownVariable] = []):
+    def __init__(self, constant: Union[float, str, Fraction], variables: List[UnknownVariable] = []):
         self.constant = Fraction(constant)
         variables.sort()
         self.variables = variables
 
     def __str__(self) -> str:
-        """ convert Element to string.
+        """
+        Convert Element to string.
 
-        :return: string format of the class.
+        Returns
+        -------
+        str
+            String representation of the Element.
         """
         return '*'.join([str(self.constant)] + [str(var) for var in self.variables])
 
-    def __mul__(self, other):
-        """ multiply two elements\n
-        the constant of each element are multiplied for the new element. The set of variable for the new element is the uion of the two other elements.
+    def __mul__(self, other: Element) -> Element:
+        """
+        Multiply two elements.
 
-        :param other: the other element that should be multiplied
-        :return: new element that is multiplied of two element
+        Parameters
+        ----------
+        other : Element
+            The other factor for multiplication
+
+        Returns
+        -------
+        Element
+            New element that is the product of two elements
         """
         return Element((self.constant * other.constant), (self.variables + other.variables))
 
-    def __add__(self, other):
-        """ sum of two elements\n
-        Sum of two or more elements is a Coefficient.
+    def __add__(self, other: Element) -> Element:
+        """
+        Add two elements.
 
-        :param other: the other element that should be added.
-        :return: new coefficient that is sum of two element
+        Parameters
+        ----------
+        other : Element
+            The other element that should be added
+
+        Returns
+        -------
+        Element
+            New element that is the sum of two elements
         """
         return Coefficient([self, other])
 
-    def __lt__(self, other) -> bool:
-        """ compare two elements\n
-        the comparison is based on their length of set of variable and if that is equal based on the set of variable lexicographically and if that is equal too based on their constant.
+    def __lt__(self, other: Element) -> bool:
+        """
+        Compare two elements (less than).
 
-        :param other: the other element that should be compared to.
-        :return: boolean that determine which one is less than the other.
+        The comparison is based on their length of set of variable and if that
+        is equal based on the set of variable lexicographically and if that is
+        equal too based on their constant.
+
+        Parameters
+        ----------
+        other : Element
+            The other element that should be compared to.
+
+        Returns
+        -------
+        bool
+            Boolean that determine which one is less than the other.
         """
         if len(self.variables) == len(other.variables):
             for i in range(len(self.variables)):
@@ -62,13 +115,23 @@ class Element:
         else:
             return len(self.variables) < len(other.variables)
 
-    def __eq__(self, other) -> bool:
-        """ compare two elements\n
-         the comparison is based on their length of set of variable and if that is equal based on the set of variable lexicographically and if that is equal too based on their constant.
+    def __eq__(self, other: Element) -> bool:
+        """
+        Compare two elements (equal).
 
-         :param other: the other element that should be compared to.
-         :return: boolean that determine are they equal or not.
-         """
+        The comparison is based on their length of set of variable and if that
+        is equal and all variables are equal they are equal.      
+
+        Parameters
+        ----------
+        other : Element
+            The other element that should be compared to.
+
+        Returns
+        -------
+        bool
+            Boolean that determine are they equal or not.
+        """
 
         if len(self.variables) == len(other.variables):
             for i in range(len(self.variables)):
@@ -78,18 +141,27 @@ class Element:
         else:
             return False
 
-    def __neg__(self):
-        """ negate an element\n
+    def __neg__(self) -> Element:
+        """
+        Negate an element.
+
         For negating an element it is sufficient to just negate the constant.
 
-        :return: an element that is the negated form of the element.
+        Returns
+        -------
+        Element
+            A new element that is the negated form of the element.
         """
         return Element(-self.constant, self.variables)
 
     def convert_to_preorder(self) -> str:
-        """ convert Element to preorder format.
+        """
+        Convert Element to preorder format string.
 
-        :return: string in preorder format of the class.
+        Returns
+        -------
+        str
+            String in preorder format of the class
         """
         if self.constant == 0:
             return '0'
@@ -111,34 +183,64 @@ class Element:
 
 
 class Coefficient:
-    """ A class that represent the Coefficient\n
-            It consists a set of elements which should be added together to form the coefficient.
-            For example 2*a*b + 1/2*c*c*c + 3.5 is a coefficient.
+    """
+    A class that represent a coefficient.
 
-            Attributes:
-                elements ([Element]): The sorted list of elements that should be added together
+    It consists a list of elements that should be added together to form the coefficient.
 
-        """
+    Examples
+    --------
+    For example `2*a*b + 1/2*c*c*c + 3.5` is a coefficient.
+
+    >>> Coefficient(
+    ...     [
+    ...         Element(2, [UnknownVariable('a'), UnknownVariable('b')]),
+    ...         Element(1/2, [UnknownVariable('c'), UnknownVariable('c'), UnknownVariable('c')]),
+    ...         Element(3.5)
+    ...     ])
+    
+
+    Parameters
+    ----------
+    elements : List[Element], optional
+        The list of elements that should be added together, by default []
+
+    Attributes
+    ----------
+    elements : List[Element]
+        The list of elements that should be added together    
+    """
 
     def __init__(self, elements: List[Element] = []):
         elements.sort()
         self.elements = elements
 
     def __str__(self) -> str:
-        """ convert Coefficient to string.
+        """
+        Convert Coefficient to string.
 
-            :return: string format of the class.
+        Returns
+        -------
+        str
+            String representation of the Coefficient.
         """
         if len(self.elements) == 0:
             return '0'
         return '+'.join([str(element) for element in self.elements])
 
-    def __mul__(self, other):
-        """ multiply two Coefficient\n the result is a coefficient which consist elements that are equal to the
-        multiply of two element from each coefficient. numpy is used for that.
+    def __mul__(self, other: Coefficient) -> Coefficient:
+        """
+        Multiply two Coefficient.
 
-            :param other: the other Coefficient that should be multiplied
-            :return: new Coefficient that is multiplied of two Coefficient
+        Parameters
+        ----------
+        other : Coefficient
+            The other factor for multiplication
+
+        Returns
+        -------
+        Coefficient
+            New coefficient that is the product of two coefficients
         """
         return Coefficient(
             np.array(
@@ -149,24 +251,39 @@ class Coefficient:
             ).reshape(1, -1)[0]
         ).revise()
 
-    def __add__(self, other):
-        """ sum of two Coefficient\n
-            Sum of two Coefficient is a union of their elements.
+    def __add__(self, other: Union[Coefficient, Element]) -> Coefficient:
+        """
+        Add two Coefficient.
 
-            :param other: the other Coefficient that should be added.
-            :return: new coefficient that is sum of two Coefficient
+        Parameters
+        ----------
+        other : Union[Coefficient, Element]
+            The other element that should be added to the Coefficient
+
+        Returns
+        -------
+        Coefficient
+            New coefficient that is the sum of two coefficients
         """
         if type(other) is Coefficient:
             return Coefficient(self.elements + other.elements).revise()
         if type(other) is Element:
             return Coefficient(self.elements + [other]).revise()
 
-    def revise(self):
-        """ revise the Coefficient\n
-        It means that the elements with the same set of variables are added together.\n
-        For example 3*a + 2*a*b + 1*a is a Coefficient and after revise it returns 4*a + 2*a*b.
+    def revise(self) -> Coefficient:
+        """ 
+        Revise the Coefficient.
 
-        :return: the revised format of the Coefficient.
+        It sorts the elements and combines the elements with the same variables.
+
+        Examples
+        --------
+        For example `3*a + 2*a*b + 1*a` is a Coefficient and after revise it returns `4*a + 2*a*b`.
+
+        Returns
+        -------
+        Coefficient
+            The revised format of the Coefficient.
         """
         self.elements.sort()
         new_list = []
@@ -185,28 +302,46 @@ class Coefficient:
 
         return Coefficient(new_list)
 
-    def __neg__(self):
-        """ negate a Coefficient\n
-            For negating a Coefficient it is sufficient to negate all its elements.
+    def __neg__(self) -> Coefficient:
+        """
+        Negate a Coefficient.
 
-            :return: a Coefficient that is the negated form of the Coefficient.
+        For negating a Coefficient it is sufficient to negate each element.
+
+        Returns
+        -------
+        Coefficient
+            A new coefficient that is the negated form of the Coefficient.
         """
         elements = [-element for element in self.elements]
         return Coefficient(elements)
 
-    def __sub__(self, other):
-        """ subtract two Coefficient\n
-            subtract of two Coefficient is adding one with the negated of the other.
+    def __sub__(self, other: Coefficient) -> Coefficient:
+        """
+        Subtract two Coefficient.
 
-            :param other: the other Coefficient that should be subtracted.
-            :return: new coefficient that is subtracted of two Coefficient
+        Subtract of two Coefficient is adding one with the negated of the other.
+
+        Parameters
+        ----------
+        other : Coefficient
+            The other Coefficient that should be subtracted.
+
+        Returns
+        -------
+        Coefficient
+            New coefficient that is subtracted of two Coefficient
         """
         return self + (-other)
 
     def convert_to_preorder(self) -> str:
-        """ convert Coefficient to preorder format.
+        """
+        Convert Coefficient to preorder format string.
 
-        :return: string in preorder format of the class.
+        Returns
+        -------
+        str
+            String in preorder format of the class
         """
         if len(self.elements) == 0:
             return '0'
