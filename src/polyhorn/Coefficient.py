@@ -24,7 +24,7 @@ class Element:
     - The term `1/2*c*c*c` is an element where 1/2 is the constant and c is the variable.
         
         >>> Element(1/2, [UnknownVariable('c'), UnknownVariable('c'), UnknownVariable('c')])
-        
+
 
     Parameters
     ----------
@@ -33,7 +33,8 @@ class Element:
     variables : List[UnknownVariable], optional
         The sorted list of variables that should be multiplied together, by default []
 
-    Attributes:
+
+    Attributes
     ----------
     constant : Fraction
         The constant of the element
