@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>polyhorn.Putinar &mdash; PolyHorn 0.0.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=282f96c0"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            PolyHorn
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">PolyHorn API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.main.html">Main module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Coefficient.html">Coefficient module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Constant.html">Constant module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Constraint.html">Constraint module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Convertor.html">Convertor module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.DNF.html">DNF module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Farkas.html">Farkas module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Handelman.html">Handelman module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Parser.html">Parser module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Polynomial.html">Polynomial module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.PositiveModel.html">PositiveModel module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Putinar.html">Putinar module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Solver.html">Solver module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.UnknownVariable.html">UnknownVariable module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Indices and tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">Index</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PolyHorn</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">polyhorn.Putinar</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for polyhorn.Putinar</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">.Constraint</span> <span class="kn">import</span> <span class="n">CoefficientConstraint</span><span class="p">,</span> <span class="n">PolynomialConstraint</span>
+<span class="kn">from</span> <span class="nn">.Polynomial</span> <span class="kn">import</span> <span class="n">Polynomial</span>
+<span class="kn">from</span> <span class="nn">.Solver</span> <span class="kn">import</span> <span class="n">Solver</span>
+<span class="kn">from</span> <span class="nn">.UnknownVariable</span> <span class="kn">import</span> <span class="n">UnknownVariable</span>
+
+
+<div class="viewcode-block" id="Putinar">
+<a class="viewcode-back" href="../../polyhorn.Putinar.html#polyhorn.Putinar.Putinar">[docs]</a>
+<span class="k">class</span> <span class="nc">Putinar</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    A class that performs the constraint transformation according to Putinar</span>
+<span class="sd">    Theorem.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    variables : List[UnknownVariable]</span>
+<span class="sd">        The list of variables of the polynomials.</span>
+<span class="sd">    LHS : List[PolynomialConstraint]</span>
+<span class="sd">        The list of left hand side constraints in farkas algorithm</span>
+<span class="sd">    RHS : PolynomialConstraint</span>
+<span class="sd">        The right hand side constraint in algorithm</span>
+<span class="sd">    max_d_for_sat : int, optional</span>
+<span class="sd">        maximum degree of monoids when finding sat constraints, by default 0</span>
+<span class="sd">    max_d_for_unsat : int, optional</span>
+<span class="sd">        maximum degree of monoids when finding unsat constraints, by default 0</span>
+<span class="sd">    max_d_for_unsat_strict : int, optional</span>
+<span class="sd">        maximum degree of monoids when finding unsat constraints in strict case, by default 0</span>
+<span class="sd">    degree_for_new_var : int, optional</span>
+<span class="sd">        degree of new variable that is generated for strict case in right hand side of equality, by default 0</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    variables : List[UnknownVariable]</span>
+<span class="sd">        The list of variables of the polynomials.</span>
+<span class="sd">    LHS : List[PolynomialConstraint]</span>
+<span class="sd">        The list of left hand side constraints in farkas algorithm</span>
+<span class="sd">    RHS : PolynomialConstraint</span>
+<span class="sd">        The right hand side constraint in algorithm</span>
+<span class="sd">    max_d_for_sat : int</span>
+<span class="sd">        maximum degree of monoids when finding sat constraints</span>
+<span class="sd">    max_d_for_unsat : int</span>
+<span class="sd">        maximum degree of monoids when finding unsat constraints</span>
+<span class="sd">    max_d_for_unsat_strict : int</span>
+<span class="sd">        maximum degree of monoids when finding unsat constraints in strict case</span>
+<span class="sd">    degree_for_new_var : int</span>
+<span class="sd">        degree of new variable that is generated for strict case in right hand side of equality</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">UnknownVariable</span><span class="p">],</span> <span class="n">LHS</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PolynomialConstraint</span><span class="p">],</span> <span class="n">RHS</span><span class="p">:</span> <span class="n">PolynomialConstraint</span><span class="p">,</span>
+                 <span class="n">max_d_for_sat</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">max_d_for_unsat</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">max_d_for_unsat_strict</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">degree_for_new_var</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RHS</span> <span class="o">=</span> <span class="n">RHS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">LHS</span> <span class="o">=</span> <span class="n">LHS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_d_for_sat</span> <span class="o">=</span> <span class="n">max_d_for_sat</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_d_for_unsat</span> <span class="o">=</span> <span class="n">max_d_for_unsat</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_d_for_unsat_strict</span> <span class="o">=</span> <span class="n">max_d_for_unsat_strict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">degree_for_new_var</span> <span class="o">=</span> <span class="n">degree_for_new_var</span>
+
+<div class="viewcode-block" id="Putinar.get_lower_triangular_matrix">
+<a class="viewcode-back" href="../../polyhorn.Putinar.html#polyhorn.Putinar.Putinar.get_lower_triangular_matrix">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_lower_triangular_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Polynomial</span><span class="p">]],</span> <span class="n">List</span><span class="p">[</span><span class="n">CoefficientConstraint</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This function generates a lower triangular matrix `L` with positive</span>
+<span class="sd">        elements in diagonal and returns `L * L^T`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dim : int</span>
+<span class="sd">            The dimension of the generated matrix</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[List[Polynomial]]</span>
+<span class="sd">            A positive semidefinite matrix.</span>
+<span class="sd">        List[CoefficientConstraint]</span>
+<span class="sd">            List of constraints on the diagonal elements of the matrix </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[[</span><span class="n">Polynomial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="p">[])</span> <span class="k">for</span> <span class="n">__</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">)]</span>
+             <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">)]</span>
+        <span class="p">)</span>
+        <span class="n">constraints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">Solver</span><span class="o">.</span><span class="n">get_variable_polynomial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;l_</span><span class="si">{</span><span class="n">i</span><span class="si">}{</span><span class="n">j</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                                                              <span class="s1">&#39;generated_for_semidefinite_matrix&#39;</span><span class="p">)</span>
+            <span class="n">constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">CoefficientConstraint</span><span class="p">(</span>
+                <span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">monomials</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">coefficient</span><span class="p">,</span> <span class="s1">&#39;&gt;=&#39;</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">matrix</span><span class="o">.</span><span class="n">T</span><span class="p">),</span> <span class="n">constraints</span></div>
+
+
+<div class="viewcode-block" id="Putinar.get_monoids">
+<a class="viewcode-back" href="../../polyhorn.Putinar.html#polyhorn.Putinar.Putinar.get_monoids">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_monoids</span><span class="p">(</span><span class="n">variables</span><span class="p">,</span> <span class="n">max_d</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Polynomial</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        This function gives the monoid of a maximum degree on set of variables.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        variables : List[UnknownVariable]</span>
+<span class="sd">            The set of variables</span>
+<span class="sd">        max_d : int</span>
+<span class="sd">            Maximum degree of generated monoids</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[Polynomial]</span>
+<span class="sd">            List of monoids defined on the set of variable</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">all_monoid</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">mask</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">((</span><span class="n">max_d</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)):</span>
+            <span class="n">mask_copy</span> <span class="o">=</span> <span class="n">mask</span>
+            <span class="n">degrees</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">)):</span>
+                <span class="n">degrees</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mask_copy</span> <span class="o">%</span> <span class="p">(</span><span class="n">max_d</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="n">mask_copy</span> <span class="o">//=</span> <span class="p">(</span><span class="n">max_d</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="n">degrees</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_d</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">all_monoid</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Solver</span><span class="o">.</span><span class="n">get_degree_polynomial</span><span class="p">(</span><span class="n">variables</span><span class="p">,</span> <span class="n">degrees</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">all_monoid</span></div>
+
+
+<div class="viewcode-block" id="Putinar.get_sum_of_square">
+<a class="viewcode-back" href="../../polyhorn.Putinar.html#polyhorn.Putinar.Putinar.get_sum_of_square">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_sum_of_square</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_d</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Polynomial</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">CoefficientConstraint</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        The function generates a new sum-of-square template on the set of class </span>
+<span class="sd">        variables and given maximum degree.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        max_d : int</span>
+<span class="sd">            Maximum degree of the generated templates</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Polynomial</span>
+<span class="sd">            Polynomial represents the sum-of-square template</span>
+<span class="sd">        List[CoefficientConstraint]</span>
+<span class="sd">            List of constraints on the coefficients of the template</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">monoid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Putinar</span><span class="o">.</span><span class="n">get_monoids</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="p">(</span><span class="n">max_d</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">semi_definite_matrix</span><span class="p">,</span> <span class="n">constraint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_lower_triangular_matrix</span><span class="p">(</span>
+            <span class="n">monoid</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">poly_with_more_degree</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">monoid</span><span class="p">,</span> <span class="n">semi_definite_matrix</span><span class="p">),</span> <span class="n">monoid</span><span class="o">.</span><span class="n">T</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">monomials</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">monomial</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">poly_with_more_degree</span><span class="o">.</span><span class="n">monomials</span><span class="p">):</span>
+            <span class="n">new_poly</span> <span class="o">=</span> <span class="n">Solver</span><span class="o">.</span><span class="n">get_variable_polynomial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;t_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;eta_generated_for_sum_of_square&#39;</span><span class="p">)</span> \
+                <span class="o">*</span> <span class="n">Solver</span><span class="o">.</span><span class="n">get_degree_polynomial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="n">monomial</span><span class="o">.</span><span class="n">degrees</span><span class="p">)</span>
+            <span class="n">constraint</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">CoefficientConstraint</span><span class="p">(</span>
+                    <span class="n">new_poly</span><span class="o">.</span><span class="n">monomials</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">coefficient</span> <span class="o">-</span> <span class="n">monomial</span><span class="o">.</span><span class="n">coefficient</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">monomials</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_poly</span><span class="o">.</span><span class="n">monomials</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">Polynomial</span><span class="p">(</span><span class="n">poly_with_more_degree</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="n">monomials</span><span class="p">),</span> <span class="n">constraint</span></div>
+
+
+<div class="viewcode-block" id="Putinar.get_poly_sum">
+<a class="viewcode-back" href="../../polyhorn.Putinar.html#polyhorn.Putinar.Putinar.get_poly_sum">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_poly_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_d</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Polynomial</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">CoefficientConstraint</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        This function returns a polynomial `y_0(rhs is struct) + h_0 + h_1*g_1 ... + h_n*g_n`</span>
+<span class="sd">        where `h_i` are sum-of-square polynomial and `g_i` are left hand side polynomials.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        max_d : int</span>
+<span class="sd">            Maximum degree of the generated templates</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Polynomial</span>
+<span class="sd">            Polynomial of sum of all left hand side with new variables</span>
+<span class="sd">        List[CoefficientConstraint]</span>
+<span class="sd">            List of constraints on the coefficients of the templates</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">polynomial_of_sum</span><span class="p">,</span> <span class="n">all_constraints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sum_of_square</span><span class="p">(</span><span class="n">max_d</span><span class="p">)</span>
+        <span class="n">strict_poly</span> <span class="o">=</span> <span class="n">Solver</span><span class="o">.</span><span class="n">get_constant_polynomial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">RHS</span><span class="o">.</span><span class="n">is_strict</span><span class="p">():</span>
+            <span class="n">new_var</span> <span class="o">=</span> <span class="n">Solver</span><span class="o">.</span><span class="n">get_variable_polynomial</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="s1">&#39;y0&#39;</span><span class="p">,</span> <span class="s1">&#39;generated_for_putinar_in_strict_case&#39;</span><span class="p">)</span>
+            <span class="n">strict_poly</span> <span class="o">=</span> <span class="n">strict_poly</span> <span class="o">+</span> <span class="n">new_var</span>
+            <span class="n">polynomial_of_sum</span> <span class="o">=</span> <span class="n">polynomial_of_sum</span> <span class="o">+</span> <span class="n">new_var</span>
+            <span class="n">all_constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">CoefficientConstraint</span><span class="p">(</span>
+                <span class="n">new_var</span><span class="o">.</span><span class="n">monomials</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">coefficient</span><span class="p">,</span> <span class="s1">&#39;&gt;=&#39;</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">left_constraint</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">LHS</span><span class="p">):</span>
+            <span class="n">left_poly</span> <span class="o">=</span> <span class="n">left_constraint</span><span class="o">.</span><span class="n">polynomial</span>
+            <span class="n">new_sum_of_square</span><span class="p">,</span> <span class="n">constraint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sum_of_square</span><span class="p">(</span><span class="n">max_d</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">RHS</span><span class="o">.</span><span class="n">is_strict</span><span class="p">()</span> <span class="ow">and</span> <span class="n">left_constraint</span><span class="o">.</span><span class="n">is_strict</span><span class="p">():</span>
+                <span class="n">new_var</span> <span class="o">=</span> <span class="n">Solver</span><span class="o">.</span><span class="n">get_variable_polynomial</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="s1">&#39;y0&#39;</span><span class="p">,</span> <span class="s1">&#39;generated_for_putinar_in_strict_case&#39;</span><span class="p">)</span>
+                <span class="n">strict_poly</span> <span class="o">=</span> <span class="n">strict_poly</span> <span class="o">+</span> <span class="n">new_var</span>
+                <span class="n">new_sum_of_square</span> <span class="o">=</span> <span class="n">new_sum_of_square</span> <span class="o">+</span> <span class="n">new_var</span>
+
+                <span class="n">all_constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">CoefficientConstraint</span><span class="p">(</span>
+                    <span class="n">new_var</span><span class="o">.</span><span class="n">monomials</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">coefficient</span><span class="p">,</span> <span class="s1">&#39;&gt;=&#39;</span><span class="p">))</span>
+            <span class="n">all_constraints</span> <span class="o">=</span> <span class="n">all_constraints</span> <span class="o">+</span> <span class="n">constraint</span>
+            <span class="n">polynomial_of_sum</span> <span class="o">=</span> <span class="n">polynomial_of_sum</span> <span class="o">+</span> \
+                <span class="p">(</span><span class="n">new_sum_of_square</span> <span class="o">*</span> <span class="n">left_poly</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">RHS</span><span class="o">.</span><span class="n">is_strict</span><span class="p">():</span>
+            <span class="n">all_constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">CoefficientConstraint</span><span class="p">(</span>
+                <span class="n">strict_poly</span><span class="o">.</span><span class="n">monomials</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">coefficient</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">polynomial_of_sum</span><span class="p">,</span> <span class="n">all_constraints</span></div>
+
+
+<div class="viewcode-block" id="Putinar.get_SAT_constraint">
+<a class="viewcode-back" href="../../polyhorn.Putinar.html#polyhorn.Putinar.Putinar.get_SAT_constraint">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_SAT_constraint</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">CoefficientConstraint</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        A function to find the constraints when the LHS =&gt; RHS is satisfiable</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[CoefficientConstraint]</span>
+<span class="sd">            List of coefficient constraints when it is satisfiable</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">polynomial_of_sum</span><span class="p">,</span> <span class="n">constraints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_poly_sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_d_for_sat</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">constraints</span> <span class="o">+</span> <span class="n">Solver</span><span class="o">.</span><span class="n">find_equality_constraint</span><span class="p">(</span><span class="n">polynomial_of_sum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">RHS</span><span class="o">.</span><span class="n">polynomial</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Putinar.get_UNSAT_constraint">
+<a class="viewcode-back" href="../../polyhorn.Putinar.html#polyhorn.Putinar.Putinar.get_UNSAT_constraint">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_UNSAT_constraint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">need_strict</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">CoefficientConstraint</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        A function to find the constraints when it is not satisfiable.</span>
+
+<span class="sd">        Two set of constraint can be generated:</span>
+<span class="sd">            1. `LHS =&gt; -1 &gt;= 0`</span>
+<span class="sd">            2. `w_j^2*d = h_1*(g_1 - w_1^2) + h_2*(g_2 - w_2^2) ... h_n*(g_n - w_n^2)` for some `j` where `g_j` is strict </span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        need_strict : bool, optional</span>
+<span class="sd">            Determine which set of constraint to generate, by default False</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[CoefficientConstraint]</span>
+<span class="sd">            List of coefficient constraints when it is not satisfiable</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">need_strict</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">handel_strict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_d_for_unsat_strict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">degree_for_new_var</span><span class="p">)</span>
+        <span class="n">polynomial_of_sum</span><span class="p">,</span> <span class="n">constraints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_poly_sum</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_d_for_unsat</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">constraints</span> <span class="o">+</span> <span class="n">Solver</span><span class="o">.</span><span class="n">find_equality_constraint</span><span class="p">(</span><span class="n">polynomial_of_sum</span><span class="p">,</span>
+                                                             <span class="n">Solver</span><span class="o">.</span><span class="n">get_constant_polynomial</span><span class="p">(</span>
+                                                                 <span class="bp">self</span><span class="o">.</span><span class="n">RHS</span><span class="o">.</span><span class="n">polynomial</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="s1">&#39;-1&#39;</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Putinar.handel_strict">
+<a class="viewcode-back" href="../../polyhorn.Putinar.html#polyhorn.Putinar.Putinar.handel_strict">[docs]</a>
+    <span class="k">def</span> <span class="nf">handel_strict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_d</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">power_of_new_var</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">CoefficientConstraint</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Handles the second form of unsatisfiablity</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        max_d : int</span>
+<span class="sd">            Maximum degree of the generated templates</span>
+<span class="sd">        power_of_new_var : int</span>
+<span class="sd">            Power of the new variable that is generated for strict case</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[List[CoefficientConstraint]]</span>
+<span class="sd">            List of coefficient constraints when it is not satisfiable</span>
+<span class="sd">        :param max_d: maximum degree for template polynomials</span>
+<span class="sd">        :param power_of_new_var: power of newly generated variables</span>
+<span class="sd">        :return: list of constraint for each equality</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">UnknownVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;w_</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">type_of_var</span><span class="o">=</span><span class="s1">&#39;generated_for_strict_unsat&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span>
+                         <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">LHS</span><span class="p">))]</span>
+        <span class="n">new_set_of_cons</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">left_constraint</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">LHS</span><span class="p">:</span>
+            <span class="n">new_set_of_cons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PolynomialConstraint</span><span class="p">(</span><span class="n">left_constraint</span><span class="o">.</span><span class="n">polynomial</span><span class="o">.</span><span class="n">add_variables</span><span class="p">(</span><span class="n">new_variables</span><span class="p">),</span> <span class="n">left_constraint</span><span class="o">.</span><span class="n">sign</span>
+                                                        <span class="p">)</span>
+                                   <span class="p">)</span>
+        <span class="n">all_variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">+</span> <span class="n">new_variables</span>
+        <span class="n">all_monoids</span> <span class="o">=</span> <span class="n">Putinar</span><span class="o">.</span><span class="n">get_monoids</span><span class="p">(</span><span class="n">all_variable</span><span class="p">,</span> <span class="n">max_d</span><span class="p">)</span>
+        <span class="n">all_constraints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">left_constraint</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">new_set_of_cons</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">left_constraint</span><span class="o">.</span><span class="n">is_strict</span><span class="p">():</span>
+                <span class="n">poly_sum</span> <span class="o">=</span> <span class="n">Polynomial</span><span class="p">(</span><span class="n">all_variable</span><span class="p">,</span> <span class="p">[])</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">new_set_of_cons</span><span class="p">):</span>
+                    <span class="n">degrees</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_variable</span><span class="p">))</span>
+                    <span class="n">degrees</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="n">new_var_poly</span> <span class="o">=</span> <span class="n">Solver</span><span class="o">.</span><span class="n">get_degree_polynomial</span><span class="p">(</span>
+                        <span class="n">all_variable</span><span class="p">,</span> <span class="n">degrees</span><span class="p">)</span>
+                    <span class="n">poly_sum</span> <span class="o">=</span> <span class="n">poly_sum</span> <span class="o">+</span> \
+                        <span class="p">(</span><span class="n">Putinar</span><span class="o">.</span><span class="n">get_general_template</span><span class="p">(</span><span class="n">all_variable</span><span class="p">,</span> <span class="n">all_monoids</span><span class="p">)</span> <span class="o">*</span>
+                         <span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">polynomial</span> <span class="o">-</span> <span class="p">(</span><span class="n">new_var_poly</span> <span class="o">*</span> <span class="n">new_var_poly</span><span class="p">)))</span>
+
+                <span class="n">degrees</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_variable</span><span class="p">))</span>
+                <span class="n">degrees</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">new_var_poly</span> <span class="o">=</span> <span class="n">Solver</span><span class="o">.</span><span class="n">get_degree_polynomial</span><span class="p">(</span>
+                    <span class="n">all_variable</span><span class="p">,</span> <span class="n">degrees</span><span class="p">)</span>
+                <span class="n">poly_of_var_to_power</span> <span class="o">=</span> <span class="n">Solver</span><span class="o">.</span><span class="n">get_constant_polynomial</span><span class="p">(</span>
+                    <span class="n">all_variable</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">power_of_new_var</span><span class="p">):</span>
+                    <span class="n">poly_of_var_to_power</span> <span class="o">=</span> <span class="n">poly_of_var_to_power</span> <span class="o">*</span> <span class="n">new_var_poly</span>
+                <span class="n">all_constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Solver</span><span class="o">.</span><span class="n">find_equality_constraint</span><span class="p">(</span>
+                    <span class="n">poly_of_var_to_power</span><span class="p">,</span> <span class="n">poly_sum</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">all_constraints</span></div>
+
+
+<div class="viewcode-block" id="Putinar.get_general_template">
+<a class="viewcode-back" href="../../polyhorn.Putinar.html#polyhorn.Putinar.Putinar.get_general_template">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_general_template</span><span class="p">(</span><span class="n">all_variables</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">UnknownVariable</span><span class="p">],</span> <span class="n">all_monoids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Polynomial</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Polynomial</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate a new variable for every monoid and multiply it and return the</span>
+<span class="sd">        sum of all.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        all_variables : List[UnknownVariable]</span>
+<span class="sd">            Variables of the polynomials</span>
+<span class="sd">        all_monoids : List[Polynomial]</span>
+<span class="sd">            Monoids which should be multiplied by new variable</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Polynomial</span>
+<span class="sd">            A polynomial of the sum of all monoid multiplied by new variables</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_unknown_variables</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Solver</span><span class="o">.</span><span class="n">get_variable_polynomial</span><span class="p">(</span>
+                <span class="n">all_variables</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;eta</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">type_of_var</span><span class="o">=</span><span class="s1">&#39;generated_for_template_poly_strict&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_monoids</span><span class="p">))]</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">new_unknown_variables</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">all_monoids</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Krishnendu Chatterjee, Amir Kafshdar Goharshady, Ehsan Kafshdar Goharshady, Mehrdad Karrabi, Milad Saadat, Maximilian Seeliger, Djordje Zikelic.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

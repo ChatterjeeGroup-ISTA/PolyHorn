@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>polyhorn.Solver &mdash; PolyHorn 0.0.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=282f96c0"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            PolyHorn
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">PolyHorn API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.main.html">Main module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Coefficient.html">Coefficient module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Constant.html">Constant module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Constraint.html">Constraint module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Convertor.html">Convertor module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.DNF.html">DNF module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Farkas.html">Farkas module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Handelman.html">Handelman module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Parser.html">Parser module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Polynomial.html">Polynomial module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.PositiveModel.html">PositiveModel module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Putinar.html">Putinar module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Solver.html">Solver module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.UnknownVariable.html">UnknownVariable module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Indices and tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">Index</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PolyHorn</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">polyhorn.Solver</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for polyhorn.Solver</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">.Coefficient</span> <span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span> <span class="nn">.Constraint</span> <span class="kn">import</span> <span class="n">CoefficientConstraint</span>
+<span class="kn">from</span> <span class="nn">.DNF</span> <span class="kn">import</span> <span class="n">DNF</span>
+<span class="kn">from</span> <span class="nn">.Polynomial</span> <span class="kn">import</span> <span class="n">Coefficient</span><span class="p">,</span> <span class="n">Monomial</span><span class="p">,</span> <span class="n">Polynomial</span><span class="p">,</span> <span class="n">UnknownVariable</span>
+
+
+<div class="viewcode-block" id="Solver">
+<a class="viewcode-back" href="../../polyhorn.Solver.html#polyhorn.Solver.Solver">[docs]</a>
+<span class="k">class</span> <span class="nc">Solver</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    This class consist of some static method which are used in other classes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Solver.find_equality_constraint">
+<a class="viewcode-back" href="../../polyhorn.Solver.html#polyhorn.Solver.Solver.find_equality_constraint">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">find_equality_constraint</span><span class="p">(</span><span class="n">LHS</span><span class="p">:</span> <span class="n">Polynomial</span><span class="p">,</span> <span class="n">RHS</span><span class="p">:</span> <span class="n">Polynomial</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">CoefficientConstraint</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Given two polynomials that should be equal together, this function </span>
+<span class="sd">        finds constraints for the equality. Moreover, all the Coefficient of</span>
+<span class="sd">        each Monomial in each side should be equal.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        LHS : Polynomial</span>
+<span class="sd">            left hand side of the equality</span>
+<span class="sd">        RHS : Polynomial</span>
+<span class="sd">            right hand side of the equality</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[CoefficientConstraint]</span>
+<span class="sd">            list of the constraints that needs to be true for equality</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">all_degree</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
+            <span class="n">LHS</span><span class="o">.</span><span class="n">dict_from_degrees_to_monomials</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">union</span><span class="p">(</span>
+            <span class="nb">set</span><span class="p">(</span><span class="n">RHS</span><span class="o">.</span><span class="n">dict_from_degrees_to_monomials</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="p">)</span>
+
+        <span class="n">all_constraint</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">degree</span> <span class="ow">in</span> <span class="n">all_degree</span><span class="p">:</span>
+            <span class="n">mono1</span> <span class="o">=</span> <span class="n">LHS</span><span class="o">.</span><span class="n">get_monomial_by_degree</span><span class="p">(</span><span class="n">degree</span><span class="p">)</span>
+            <span class="n">mono2</span> <span class="o">=</span> <span class="n">RHS</span><span class="o">.</span><span class="n">get_monomial_by_degree</span><span class="p">(</span><span class="n">degree</span><span class="p">)</span>
+            <span class="n">constraint</span> <span class="o">=</span> <span class="n">CoefficientConstraint</span><span class="p">(</span>
+                <span class="n">mono1</span><span class="o">.</span><span class="n">coefficient</span> <span class="o">-</span> <span class="n">mono2</span><span class="o">.</span><span class="n">coefficient</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">)</span>
+            <span class="n">all_constraint</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">constraint</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">all_constraint</span></div>
+
+
+<div class="viewcode-block" id="Solver.get_constant_polynomial">
+<a class="viewcode-back" href="../../polyhorn.Solver.html#polyhorn.Solver.Solver.get_constant_polynomial">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_constant_polynomial</span><span class="p">(</span><span class="n">variables</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">UnknownVariable</span><span class="p">],</span> <span class="n">constant</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Polynomial</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate new polynomial with one monomial and a constant as its coefficient.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        variables : List[UnknownVariable]</span>
+<span class="sd">            Polynomial variables</span>
+<span class="sd">        constant : str</span>
+<span class="sd">            The constant of the new polynomial</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Polynomial</span>
+<span class="sd">            Polynomial with constant as its coefficient</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Polynomial</span><span class="p">(</span><span class="n">variables</span><span class="p">,</span>
+                          <span class="p">[</span><span class="n">Monomial</span><span class="p">(</span>
+                              <span class="n">variables</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">),</span>
+                              <span class="n">Coefficient</span><span class="p">(</span>
+                                  <span class="p">[</span><span class="n">Element</span><span class="p">(</span><span class="n">constant</span><span class="p">,</span> <span class="p">[])]</span>
+                              <span class="p">)</span>
+                          <span class="p">)]</span>
+                          <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Solver.get_variable_polynomial">
+<a class="viewcode-back" href="../../polyhorn.Solver.html#polyhorn.Solver.Solver.get_variable_polynomial">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_variable_polynomial</span><span class="p">(</span><span class="n">variables</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">UnknownVariable</span><span class="p">],</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">type_of_var</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Polynomial</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate new polynomial with one monomial and a new generated variable as its coefficient</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        variables : List[UnknownVariable]</span>
+<span class="sd">            Polynomial variables</span>
+<span class="sd">        name : str</span>
+<span class="sd">            Name of the new variable</span>
+<span class="sd">        type_of_var : str, optional</span>
+<span class="sd">            Type of the new variable, by default None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Polynomial</span>
+<span class="sd">            Polynomial with new variable as its coefficient</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_variable</span> <span class="o">=</span> <span class="n">UnknownVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">type_of_var</span><span class="o">=</span><span class="n">type_of_var</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Polynomial</span><span class="p">(</span><span class="n">variables</span><span class="p">,</span>
+                          <span class="p">[</span><span class="n">Monomial</span><span class="p">(</span>
+                              <span class="n">variables</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">variables</span><span class="p">),</span>
+                              <span class="n">Coefficient</span><span class="p">(</span>
+                                  <span class="p">[</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">new_variable</span><span class="p">])]</span>
+                              <span class="p">)</span>
+                          <span class="p">)]</span>
+                          <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Solver.get_degree_polynomial">
+<a class="viewcode-back" href="../../polyhorn.Solver.html#polyhorn.Solver.Solver.get_degree_polynomial">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_degree_polynomial</span><span class="p">(</span><span class="n">variables</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">UnknownVariable</span><span class="p">],</span> <span class="n">degrees</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Polynomial</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Generate new polynomial with one monomial and given degrees</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        variables : List[UnknownVariable]</span>
+<span class="sd">            Polynomial variables</span>
+<span class="sd">        degrees : List[int]</span>
+<span class="sd">            Degree of the monomial</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Polynomial</span>
+<span class="sd">            Polynomial with given degree set</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Polynomial</span><span class="p">(</span><span class="n">variables</span><span class="p">,</span>
+                          <span class="p">[</span><span class="n">Monomial</span><span class="p">(</span>
+                              <span class="n">variables</span><span class="p">,</span> <span class="n">degrees</span><span class="p">,</span>
+                              <span class="n">Coefficient</span><span class="p">(</span>
+                                  <span class="p">[</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="p">[])]</span>
+                              <span class="p">)</span>
+                          <span class="p">)]</span>
+                          <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Solver.convert_constraints_to_smt_format">
+<a class="viewcode-back" href="../../polyhorn.Solver.html#polyhorn.Solver.Solver.convert_constraints_to_smt_format">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">convert_constraints_to_smt_format</span><span class="p">(</span><span class="n">all_constraint</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">DNF</span><span class="p">],</span> <span class="n">precondition</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">DNF</span><span class="p">]],</span> <span class="n">names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Generate string for declaring constraint in smt format</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        all_constraint : List[DNF]</span>
+<span class="sd">            Constraints that should be converted to smt format</span>
+<span class="sd">        precondition : List[List[DNF]]</span>
+<span class="sd">            List of precondition that should be added to the constraints</span>
+<span class="sd">        names : List[str], optional</span>
+<span class="sd">            List of name for each constraint, by default None</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            SMT string format of constraints</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">smt_string</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">constraint</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">all_constraint</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">smt_string</span> <span class="o">=</span> <span class="n">smt_string</span> <span class="o">+</span> \
+                    <span class="sa">f</span><span class="s1">&#39;(assert  </span><span class="si">{</span><span class="n">constraint</span><span class="o">.</span><span class="n">convert_to_preorder</span><span class="p">()</span><span class="si">}</span><span class="s1"> )</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">smt_string</span> <span class="o">=</span> <span class="n">smt_string</span> <span class="o">+</span> \
+                    <span class="sa">f</span><span class="s1">&#39;(assert ( ! </span><span class="si">{</span><span class="n">constraint</span><span class="o">.</span><span class="n">convert_to_preorder</span><span class="p">()</span><span class="si">}</span><span class="s1"> :named </span><span class="si">{</span><span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s1">))</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+        <span class="k">for</span> <span class="n">constraint</span> <span class="ow">in</span> <span class="n">precondition</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">constraint</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">smt_string</span> <span class="o">=</span> <span class="n">smt_string</span> <span class="o">+</span> \
+                    <span class="sa">f</span><span class="s1">&#39;(assert  </span><span class="si">{</span><span class="n">constraint</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">convert_to_preorder</span><span class="p">()</span><span class="si">}</span><span class="s1"> )</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">constraint</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">smt_string</span> <span class="o">=</span> <span class="n">smt_string</span> <span class="o">+</span> \
+                    <span class="sa">f</span><span class="s1">&#39;(assert (=&gt; </span><span class="si">{</span><span class="n">constraint</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">convert_to_preorder</span><span class="p">()</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">constraint</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">convert_to_preorder</span><span class="p">()</span><span class="si">}</span><span class="s1">))</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="k">return</span> <span class="n">smt_string</span></div>
+
+
+<div class="viewcode-block" id="Solver.smt_declare_variable_phase">
+<a class="viewcode-back" href="../../polyhorn.Solver.html#polyhorn.Solver.Solver.smt_declare_variable_phase">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">smt_declare_variable_phase</span><span class="p">(</span><span class="n">all_constraint</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">DNF</span><span class="p">],</span> <span class="n">real</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                                   <span class="n">pre_variables</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">UnknownVariable</span><span class="p">]</span> <span class="o">=</span> <span class="p">[])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generate string format for declaring the variables in smt format.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        all_constraint : List[DNF]</span>
+<span class="sd">            Constraint that their variable should be generated</span>
+<span class="sd">        real : bool, optional</span>
+<span class="sd">            Variables should be declared as integer or real valued, by default True</span>
+<span class="sd">        pre_variables : List[UnknownVariable], optional</span>
+<span class="sd">            List of variables that should be defined but might not be in constraints, by default []</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            SMT string format of declaration phase</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">all_variables</span> <span class="o">=</span> <span class="n">Solver</span><span class="o">.</span><span class="n">get_all_variable</span><span class="p">(</span><span class="n">all_constraint</span><span class="p">,</span> <span class="n">pre_variables</span><span class="p">)</span>
+
+        <span class="n">smt_string</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">all_variables</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">real</span><span class="p">:</span>
+                <span class="n">smt_string</span> <span class="o">=</span> <span class="n">smt_string</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;(declare-const </span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s1"> Real)</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">smt_string</span> <span class="o">=</span> <span class="n">smt_string</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39;(declare-const </span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s1"> Int)</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+        <span class="k">return</span> <span class="n">smt_string</span></div>
+
+
+<div class="viewcode-block" id="Solver.get_all_variable">
+<a class="viewcode-back" href="../../polyhorn.Solver.html#polyhorn.Solver.Solver.get_all_variable">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_all_variable</span><span class="p">(</span><span class="n">all_constraints</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">DNF</span><span class="p">],</span> <span class="n">pre_variables</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">UnknownVariable</span><span class="p">]</span> <span class="o">=</span> <span class="p">[])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">UnknownVariable</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        Find all the variables in a list of constraint.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        all_constraints : List[DNF]</span>
+<span class="sd">            List of constraints</span>
+<span class="sd">        pre_variables : List[UnknownVariable], optional</span>
+<span class="sd">            List of variables that should be defined but might not be in constraints, by default []</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[UnknownVariable]</span>
+<span class="sd">            List of variables used in constraints</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">all_variables</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">pre_variables</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">dnf</span> <span class="ow">in</span> <span class="n">all_constraints</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">literal</span> <span class="ow">in</span> <span class="n">dnf</span><span class="o">.</span><span class="n">literals</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">constraint</span> <span class="ow">in</span> <span class="n">literal</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">constraint</span><span class="o">.</span><span class="n">coefficient</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span>
+                        <span class="n">all_variables</span> <span class="o">=</span> <span class="n">all_variables</span><span class="o">.</span><span class="n">union</span><span class="p">(</span>
+                            <span class="nb">set</span><span class="p">([</span><span class="n">var</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">element</span><span class="o">.</span><span class="n">variables</span><span class="p">]))</span>
+
+        <span class="k">return</span> <span class="n">all_variables</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Krishnendu Chatterjee, Amir Kafshdar Goharshady, Ehsan Kafshdar Goharshady, Mehrdad Karrabi, Milad Saadat, Maximilian Seeliger, Djordje Zikelic.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

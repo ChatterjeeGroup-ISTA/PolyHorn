@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>polyhorn.Farkas &mdash; PolyHorn 0.0.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=282f96c0"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            PolyHorn
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">PolyHorn API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.main.html">Main module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Coefficient.html">Coefficient module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Constant.html">Constant module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Constraint.html">Constraint module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Convertor.html">Convertor module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.DNF.html">DNF module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Farkas.html">Farkas module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Handelman.html">Handelman module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Parser.html">Parser module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Polynomial.html">Polynomial module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.PositiveModel.html">PositiveModel module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Putinar.html">Putinar module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.Solver.html">Solver module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../polyhorn.UnknownVariable.html">UnknownVariable module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Indices and tables</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../genindex.html">Index</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PolyHorn</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">polyhorn.Farkas</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for polyhorn.Farkas</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span> <span class="nn">.Constraint</span> <span class="kn">import</span> <span class="n">CoefficientConstraint</span><span class="p">,</span> <span class="n">PolynomialConstraint</span>
+<span class="kn">from</span> <span class="nn">.Polynomial</span> <span class="kn">import</span> <span class="n">Polynomial</span>
+<span class="kn">from</span> <span class="nn">.Solver</span> <span class="kn">import</span> <span class="n">Solver</span>
+<span class="kn">from</span> <span class="nn">.UnknownVariable</span> <span class="kn">import</span> <span class="n">UnknownVariable</span>
+
+
+<div class="viewcode-block" id="Farkas">
+<a class="viewcode-back" href="../../polyhorn.Farkas.html#polyhorn.Farkas.Farkas">[docs]</a>
+<span class="k">class</span> <span class="nc">Farkas</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class that performs the constraint transformation according to Farkas</span>
+<span class="sd">    Lemma.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    variables : List[UnknownVariable]</span>
+<span class="sd">        The list of variables of the polynomials.</span>
+<span class="sd">    LHS : List[PolynomialConstraint]</span>
+<span class="sd">        The list of left hand side constraints in farkas algorithm</span>
+<span class="sd">    RHS : PolynomialConstraint</span>
+<span class="sd">        The right hand side constraint in algorithm</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    variables : List[UnknownVariable]</span>
+<span class="sd">        The list of variables of the polynomials.</span>
+<span class="sd">    LHS : List[PolynomialConstraint]</span>
+<span class="sd">        The list of left hand side constraints in farkas algorithm</span>
+<span class="sd">    RHS : PolynomialConstraint</span>
+<span class="sd">        The right hand side constraint in algorithm</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variables</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">UnknownVariable</span><span class="p">],</span> <span class="n">LHS</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PolynomialConstraint</span><span class="p">],</span> <span class="n">RHS</span><span class="p">:</span> <span class="n">PolynomialConstraint</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">RHS</span> <span class="o">=</span> <span class="n">RHS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">LHS</span> <span class="o">=</span> <span class="n">LHS</span>
+
+<div class="viewcode-block" id="Farkas.get_poly_sum">
+<a class="viewcode-back" href="../../polyhorn.Farkas.html#polyhorn.Farkas.Farkas.get_poly_sum">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_poly_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">need_strict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Polynomial</span><span class="p">,</span> <span class="n">CoefficientConstraint</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        This function returns a polynomial y_0 + y_1*f_1 + y_2*f_2 ...+ y_n*f_n</span>
+<span class="sd">        where f_i are left hand side polynomials and y_i are newly created </span>
+<span class="sd">        variable in farkas theorem.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        need_strict : bool, optional</span>
+<span class="sd">            Is it generated for the 0 &gt; 0 case or not, by default False</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Tuple[Polynomial, CoefficientConstraint]</span>
+<span class="sd">            polynomial of sum of all left hand side with new variables and corresponding constraints.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_var</span> <span class="o">=</span> <span class="n">Solver</span><span class="o">.</span><span class="n">get_variable_polynomial</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="s1">&#39;y0&#39;</span><span class="p">,</span> <span class="s1">&#39;generated_for_Farkas&#39;</span><span class="p">)</span>
+        <span class="n">polynomial_of_sum</span> <span class="o">=</span> <span class="n">new_var</span>
+
+        <span class="n">sum_of_strict</span> <span class="o">=</span> <span class="n">Solver</span><span class="o">.</span><span class="n">get_constant_polynomial</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">new_var</span>
+
+        <span class="n">constraints</span> <span class="o">=</span> <span class="p">[</span><span class="n">CoefficientConstraint</span><span class="p">(</span>
+            <span class="n">new_var</span><span class="o">.</span><span class="n">monomials</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">coefficient</span><span class="p">,</span> <span class="s1">&#39;&gt;=&#39;</span><span class="p">)]</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">left_constraint</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">LHS</span><span class="p">):</span>
+            <span class="n">left_poly</span> <span class="o">=</span> <span class="n">left_constraint</span><span class="o">.</span><span class="n">polynomial</span>
+            <span class="n">new_var_poly</span> <span class="o">=</span> <span class="n">Solver</span><span class="o">.</span><span class="n">get_variable_polynomial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;y</span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                                                          <span class="s1">&#39;generated_for_Farkas&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">left_constraint</span><span class="o">.</span><span class="n">is_strict</span><span class="p">():</span>
+                <span class="n">sum_of_strict</span> <span class="o">=</span> <span class="n">sum_of_strict</span> <span class="o">+</span> <span class="n">new_var_poly</span>
+
+            <span class="n">polynomial_of_sum</span> <span class="o">=</span> <span class="n">polynomial_of_sum</span> <span class="o">+</span> <span class="p">(</span><span class="n">new_var_poly</span> <span class="o">*</span> <span class="n">left_poly</span><span class="p">)</span>
+            <span class="n">constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">CoefficientConstraint</span><span class="p">(</span>
+                <span class="n">new_var_poly</span><span class="o">.</span><span class="n">monomials</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">coefficient</span><span class="p">,</span> <span class="s1">&#39;&gt;=&#39;</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">need_strict</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">RHS</span><span class="o">.</span><span class="n">is_strict</span><span class="p">():</span>
+            <span class="n">constraints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">CoefficientConstraint</span><span class="p">(</span>
+                <span class="n">sum_of_strict</span><span class="o">.</span><span class="n">monomials</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">coefficient</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">polynomial_of_sum</span><span class="p">,</span> <span class="n">constraints</span></div>
+
+
+<div class="viewcode-block" id="Farkas.get_SAT_constraint">
+<a class="viewcode-back" href="../../polyhorn.Farkas.html#polyhorn.Farkas.Farkas.get_SAT_constraint">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_SAT_constraint</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">CoefficientConstraint</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        A function to find the constraints when the LHS =&gt; RHS is satisfiable.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[CoefficientConstraint]</span>
+<span class="sd">            list of coefficient constraints when it is satisfiable</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">polynomial_of_sum</span><span class="p">,</span> <span class="n">constraints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_poly_sum</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">Solver</span><span class="o">.</span><span class="n">find_equality_constraint</span><span class="p">(</span><span class="n">polynomial_of_sum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">RHS</span><span class="o">.</span><span class="n">polynomial</span><span class="p">)</span> <span class="o">+</span> <span class="n">constraints</span></div>
+
+
+<div class="viewcode-block" id="Farkas.get_UNSAT_constraint">
+<a class="viewcode-back" href="../../polyhorn.Farkas.html#polyhorn.Farkas.Farkas.get_UNSAT_constraint">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_UNSAT_constraint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">need_strict</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">CoefficientConstraint</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        A function to find the constraints when it is not satisfiable.</span>
+
+<span class="sd">        Two set of constraint can be generated:</span>
+<span class="sd">            1. `LHS =&gt; -1 &gt;= 0`</span>
+<span class="sd">            2. `LHS =&gt; 0 &gt; 0`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        need_strict : bool, optional</span>
+<span class="sd">            determine which set of constraint to generate, by default False</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List[CoefficientConstraint]</span>
+<span class="sd">            list of coefficient constraints when it is not satisfiable</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">need_strict</span><span class="p">:</span>
+            <span class="n">polynomial_of_sum</span><span class="p">,</span> <span class="n">constraints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_poly_sum</span><span class="p">(</span><span class="n">need_strict</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Solver</span><span class="o">.</span><span class="n">find_equality_constraint</span><span class="p">(</span><span class="n">polynomial_of_sum</span><span class="p">,</span>
+                                                   <span class="n">Polynomial</span><span class="p">(</span><span class="n">polynomial_of_sum</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="p">[]))</span> <span class="o">+</span> <span class="n">constraints</span>
+        <span class="n">polynomial_of_sum</span><span class="p">,</span> <span class="n">constraints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_poly_sum</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">Solver</span><span class="o">.</span><span class="n">find_equality_constraint</span><span class="p">(</span><span class="n">polynomial_of_sum</span><span class="p">,</span>
+                                               <span class="n">Solver</span><span class="o">.</span><span class="n">get_constant_polynomial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">RHS</span><span class="o">.</span><span class="n">polynomial</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="s1">&#39;-1&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="n">constraints</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Krishnendu Chatterjee, Amir Kafshdar Goharshady, Ehsan Kafshdar Goharshady, Mehrdad Karrabi, Milad Saadat, Maximilian Seeliger, Djordje Zikelic.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
