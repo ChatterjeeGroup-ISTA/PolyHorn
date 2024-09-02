@@ -24,3 +24,10 @@
    polyhorn.Putinar
    polyhorn.Solver
    polyhorn.UnknownVariable
+
+
+.. toctree::
+   :caption: Indices and tables
+   :maxdepth: 2
+
+   genindex
