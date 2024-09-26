@@ -34,7 +34,10 @@ def add_default_config(config: dict) -> dict:
         "degree_of_strict_unsat": 0,
         "max_d_of_strict": 0,
         "unsat_core_heuristic": False,
-        "integer_arithmetic": False
+        "integer_arithmetic": False,
+        "theorem_name": "auto",
+        "solver_name": "z3",
+        "output_path": "fully_existentially_constraints.txt",
     }
 
     for key, value in default_config.items():
@@ -57,9 +60,11 @@ def load_config(config_path: str) -> dict:
     dict
         The parsed config file with default values
     """
-    with open(config_path, "r") as file:
-        config: dict = json.load(file)
-
+    try:
+        with open(config_path, "r") as file:
+            config: dict = json.load(file)
+    except:
+        config: dict = {}
     return add_default_config(config)
 
 
@@ -279,7 +284,7 @@ if __name__ == "__main__":
     parser.add_argument("--smt2", type=str, help="Path to the smt2 file")
     parser.add_argument("--readable", type=str,
                         help="Path to the readable file")
-    parser.add_argument("--config", type=str, required=True,
+    parser.add_argument("--config", type=str,
                         help="Path to the config file")
     args = parser.parse_args()
 

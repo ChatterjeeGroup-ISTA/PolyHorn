@@ -3,14 +3,16 @@
 # This script takes two path parameters and calls another script with these absolute paths.
 
 # Check if exactly two arguments are given
-if [ "$#" -ne 2 ]; then
-    echo "Usage: $0 <path1> <path2>"
+if [ "$#" -ne 2 ] && [ "$#" -ne 1 ]; then
+    echo "Usage: $0 <path1> <path2> or $0 <path1>"
     exit 1
 fi
 
 # Convert input paths to absolute paths
 absolute_path1=$(realpath "$1")
-absolute_path2=$(realpath "$2")
+if [ "$#" = 2 ] ; then
+    absolute_path2=$(realpath "$2")
+fi
 
 # Get the directory where this script is located
 script_dir=$(dirname "$(readlink -f "$0")")
