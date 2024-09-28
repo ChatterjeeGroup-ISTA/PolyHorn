@@ -9,7 +9,7 @@ from .UnknownVariable import UnknownVariable
 
 
 class Monomial:
-    """ 
+    """
     A class that represent a Monomial.
 
     It consists a set of variables with corresponding degree in an array and a Coefficient.
@@ -44,7 +44,7 @@ class Monomial:
         self.coefficient = coefficient
 
     def __str__(self) -> str:
-        """ 
+        """
         Convert Monomial to string.
 
         Returns
@@ -56,10 +56,10 @@ class Monomial:
                         [str(self.variables[i]) + '^' + str(self.degrees[i]) for i in range(len(self.degrees))])
 
     def __mul__(self, other: Monomial) -> Monomial:
-        """ 
+        """
         Multiply two Monomials
 
-        The result is a Monomial which the degree of each variable is sum of 
+        The result is a Monomial which the degree of each variable is sum of
         degrees in multiplicands and the coefficient is the multiply of the two
         coefficient in multiplicands.
 
@@ -77,10 +77,10 @@ class Monomial:
                         self.coefficient * other.coefficient)
 
     def __eq__(self, other: Monomial) -> bool:
-        """ 
+        """
         Compare two Monomials (equality)
 
-        The comparison is based on their length of set of variable and if that 
+        The comparison is based on their length of set of variable and if that
         is equal and all variables and degree are equal they are equal.
 
         Parameters
@@ -114,7 +114,7 @@ class Monomial:
 
         Returns
         -------
-        bool 
+        bool
             Boolean that determine which one is less than the other.
         """
         if len(self.variables) != len(other.variables):
@@ -125,7 +125,7 @@ class Monomial:
         return True
 
     def __neg__(self) -> Monomial:
-        """ 
+        """
         Negate a Monomial
 
         For negating a Monomial it is sufficient to just negate the Coefficient.
@@ -153,8 +153,19 @@ class Monomial:
             number_of_nonzero += deg
         return (number_of_nonzero <= 1)
 
+    def get_deg(self) -> int:
+        """
+        Determine the degree of Monomial.
+
+        Returns
+        -------
+        bool
+            The degree of Monomial
+        """
+        return np.sum(self.degrees)
+
     def convert_to_preorder(self) -> str:
-        """ 
+        """
         Convert Monomial to preorder format.
 
         Returns
@@ -173,7 +184,7 @@ class Monomial:
 
 
 class Polynomial:
-    """ 
+    """
     A class that represent the Polynomial.
 
     It consists a set of Monomials which should be added together to form the
@@ -243,7 +254,7 @@ class Polynomial:
         return '+'.join([str(monomial) for monomial in self.monomials])
 
     def __add__(self, other: Polynomial) -> Polynomial:
-        """ 
+        """
         Sum of two Polynomials
 
         Sum of two Polynomial is a union of their Monomials.
@@ -261,7 +272,7 @@ class Polynomial:
         return Polynomial(self.variables, self.monomials + other.monomials).revise()
 
     def __neg__(self) -> Polynomial:
-        """ 
+        """
         Negate a Polynomial
 
         For negating a Polynomial it is sufficient to negate all its Monomial.
@@ -275,7 +286,7 @@ class Polynomial:
         return Polynomial(self.variables, monomials)
 
     def __sub__(self, other: Polynomial) -> Polynomial:
-        """ 
+        """
         Subtract two Polynomial
 
         Subtract of two Polynomial is adding one with the negated of the other.
@@ -296,8 +307,8 @@ class Polynomial:
         """
         Multiply two Polynomial
 
-        The result is a Polynomial which consist of Monomials that are equal to 
-        the multiply of two Monomial from each Polynomial. Numpy is used for 
+        The result is a Polynomial which consist of Monomials that are equal to
+        the multiply of two Monomial from each Polynomial. Numpy is used for
         that.
 
         Parameters
@@ -355,7 +366,7 @@ class Polynomial:
 
     def add_variables(self, new_variables: List[UnknownVariable]) -> Polynomial:
         """
-        This function adds a set of new variable to each Monomial of a 
+        This function adds a set of new variable to each Monomial of a
         Polynomial.
 
         Parameters
@@ -391,6 +402,19 @@ class Polynomial:
                 return False
         return True
 
+    def get_deg(self) -> int:
+        """
+        Determine degree of Polynomial.
+
+        Returns
+        -------
+        int
+            degree of Polynomial.
+        """
+        deg = 0
+        for mono in self.monomials:
+            deg = max(deg, mono.get_deg())
+        return deg
     def convert_to_preorder(self) -> str:
         """
         Convert Polynomial to preorder format.
