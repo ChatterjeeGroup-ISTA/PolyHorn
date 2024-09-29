@@ -14,9 +14,9 @@ from .Solver import Solver
 
 
 class PositiveModel:
-    """ 
+    """
     This class is the main class which gets some horn clause as input and find
-    the constraints based on the given theorem and find the template value 
+    the constraints based on the given theorem and find the template value
     using the given solver.
 
     Parameters
@@ -69,7 +69,7 @@ class PositiveModel:
     preconditions : List[DNF]
         List of conditions that must be satisfied independent of the horn clauses.
     instructions : List[str]
-        List of instructions that should be added to the smt file.    
+        List of instructions that should be added to the smt file.
     """
 
     def __init__(self, template_variables_name: List[str],
@@ -96,7 +96,7 @@ class PositiveModel:
         self.instructions = []
 
     def add_paired_constraint(self, lhs: DNF, rhs: DNF, program_variables: List[UnknownVariable]) -> None:
-        """ 
+        """
         Add set of horn clause constraint for lhs => rhs
 
         Parameters
@@ -135,7 +135,7 @@ class PositiveModel:
         return res
 
     def get_polynomial(self, poly_str: str, program_variables: List[UnknownVariable]) -> Polynomial:
-        """ 
+        """
         Generate a polynomial from a given string based on the template and
         program variable in the class.
 
@@ -156,7 +156,7 @@ class PositiveModel:
 
     def get_generated_constraints(self) -> List[DNF]:
         """
-        This function find the constraint for the list of the class's horn 
+        This function find the constraint for the list of the class's horn
         clause constraints based on the class configurations.
 
         Returns
@@ -170,7 +170,9 @@ class PositiveModel:
             if theorem == 'auto':
                 lhs_linear = True
                 rhs_linear = pair[1].polynomial.is_linear()
+                deg = pair[1].polynomial.get_deg()
                 for cons in pair[0]:
+                    deg = max(deg, cons.polynomial.get_deg())
                     if not cons.polynomial.is_linear():
                         lhs_linear = False
                 if lhs_linear and rhs_linear:
@@ -179,6 +181,10 @@ class PositiveModel:
                     theorem = Theorem.HANDELMAN
                 else:
                     theorem = Theorem.PUTINAR
+                self.degree_of_sat = deg
+                self.degree_of_nonstrict_unsat = deg
+                self.degree_of_strict_unsat = deg
+                self.max_d_of_strict = deg
             else:
                 theorem = Theorem(theorem)
 
