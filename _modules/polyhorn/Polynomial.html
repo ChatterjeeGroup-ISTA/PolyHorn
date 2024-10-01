@@ -101,7 +101,7 @@
 <div class="viewcode-block" id="Monomial">
 <a class="viewcode-back" href="../../polyhorn.Polynomial.html#polyhorn.Polynomial.Monomial">[docs]</a>
 <span class="k">class</span> <span class="nc">Monomial</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class that represent a Monomial.</span>
 
 <span class="sd">    It consists a set of variables with corresponding degree in an array and a Coefficient.</span>
@@ -136,7 +136,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">coefficient</span> <span class="o">=</span> <span class="n">coefficient</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert Monomial to string.</span>
 
 <span class="sd">        Returns</span>
@@ -148,10 +148,10 @@
                         <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;^&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">degrees</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">degrees</span><span class="p">))])</span>
 
     <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Monomial</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Monomial</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Multiply two Monomials</span>
 
-<span class="sd">        The result is a Monomial which the degree of each variable is sum of </span>
+<span class="sd">        The result is a Monomial which the degree of each variable is sum of</span>
 <span class="sd">        degrees in multiplicands and the coefficient is the multiply of the two</span>
 <span class="sd">        coefficient in multiplicands.</span>
 
@@ -169,10 +169,10 @@
                         <span class="bp">self</span><span class="o">.</span><span class="n">coefficient</span> <span class="o">*</span> <span class="n">other</span><span class="o">.</span><span class="n">coefficient</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Monomial</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compare two Monomials (equality)</span>
 
-<span class="sd">        The comparison is based on their length of set of variable and if that </span>
+<span class="sd">        The comparison is based on their length of set of variable and if that</span>
 <span class="sd">        is equal and all variables and degree are equal they are equal.</span>
 
 <span class="sd">        Parameters</span>
@@ -206,7 +206,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        bool </span>
+<span class="sd">        bool</span>
 <span class="sd">            Boolean that determine which one is less than the other.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">variables</span><span class="p">):</span>
@@ -217,7 +217,7 @@
         <span class="k">return</span> <span class="kc">True</span>
 
     <span class="k">def</span> <span class="fm">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Monomial</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Negate a Monomial</span>
 
 <span class="sd">        For negating a Monomial it is sufficient to just negate the Coefficient.</span>
@@ -248,10 +248,24 @@
         <span class="k">return</span> <span class="p">(</span><span class="n">number_of_nonzero</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="Monomial.get_deg">
+<a class="viewcode-back" href="../../polyhorn.Polynomial.html#polyhorn.Polynomial.Monomial.get_deg">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_deg</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determine the degree of Monomial.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bool</span>
+<span class="sd">            The degree of Monomial</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">degrees</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="Monomial.convert_to_preorder">
 <a class="viewcode-back" href="../../polyhorn.Polynomial.html#polyhorn.Polynomial.Monomial.convert_to_preorder">[docs]</a>
     <span class="k">def</span> <span class="nf">convert_to_preorder</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Convert Monomial to preorder format.</span>
 
 <span class="sd">        Returns</span>
@@ -274,7 +288,7 @@
 <div class="viewcode-block" id="Polynomial">
 <a class="viewcode-back" href="../../polyhorn.Polynomial.html#polyhorn.Polynomial.Polynomial">[docs]</a>
 <span class="k">class</span> <span class="nc">Polynomial</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A class that represent the Polynomial.</span>
 
 <span class="sd">    It consists a set of Monomials which should be added together to form the</span>
@@ -347,7 +361,7 @@
         <span class="k">return</span> <span class="s1">&#39;+&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">monomial</span><span class="p">)</span> <span class="k">for</span> <span class="n">monomial</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">monomials</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Polynomial</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Polynomial</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Sum of two Polynomials</span>
 
 <span class="sd">        Sum of two Polynomial is a union of their Monomials.</span>
@@ -365,7 +379,7 @@
         <span class="k">return</span> <span class="n">Polynomial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">monomials</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">monomials</span><span class="p">)</span><span class="o">.</span><span class="n">revise</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="fm">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Polynomial</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Negate a Polynomial</span>
 
 <span class="sd">        For negating a Polynomial it is sufficient to negate all its Monomial.</span>
@@ -379,7 +393,7 @@
         <span class="k">return</span> <span class="n">Polynomial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="n">monomials</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">Polynomial</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Polynomial</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Subtract two Polynomial</span>
 
 <span class="sd">        Subtract of two Polynomial is adding one with the negated of the other.</span>
@@ -400,8 +414,8 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Multiply two Polynomial</span>
 
-<span class="sd">        The result is a Polynomial which consist of Monomials that are equal to </span>
-<span class="sd">        the multiply of two Monomial from each Polynomial. Numpy is used for </span>
+<span class="sd">        The result is a Polynomial which consist of Monomials that are equal to</span>
+<span class="sd">        the multiply of two Monomial from each Polynomial. Numpy is used for</span>
 <span class="sd">        that.</span>
 
 <span class="sd">        Parameters</span>
@@ -464,7 +478,7 @@
 <a class="viewcode-back" href="../../polyhorn.Polynomial.html#polyhorn.Polynomial.Polynomial.add_variables">[docs]</a>
     <span class="k">def</span> <span class="nf">add_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_variables</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">UnknownVariable</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Polynomial</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        This function adds a set of new variable to each Monomial of a </span>
+<span class="sd">        This function adds a set of new variable to each Monomial of a</span>
 <span class="sd">        Polynomial.</span>
 
 <span class="sd">        Parameters</span>
@@ -503,6 +517,22 @@
                 <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
+
+<div class="viewcode-block" id="Polynomial.get_deg">
+<a class="viewcode-back" href="../../polyhorn.Polynomial.html#polyhorn.Polynomial.Polynomial.get_deg">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_deg</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determine degree of Polynomial.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            degree of Polynomial.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">deg</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">mono</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">monomials</span><span class="p">:</span>
+            <span class="n">deg</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">deg</span><span class="p">,</span> <span class="n">mono</span><span class="o">.</span><span class="n">get_deg</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">deg</span></div>
 
 <div class="viewcode-block" id="Polynomial.convert_to_preorder">
 <a class="viewcode-back" href="../../polyhorn.Polynomial.html#polyhorn.Polynomial.Polynomial.convert_to_preorder">[docs]</a>

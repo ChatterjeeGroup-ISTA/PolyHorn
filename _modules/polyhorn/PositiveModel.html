@@ -106,9 +106,9 @@
 <div class="viewcode-block" id="PositiveModel">
 <a class="viewcode-back" href="../../polyhorn.PositiveModel.html#polyhorn.PositiveModel.PositiveModel">[docs]</a>
 <span class="k">class</span> <span class="nc">PositiveModel</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This class is the main class which gets some horn clause as input and find</span>
-<span class="sd">    the constraints based on the given theorem and find the template value </span>
+<span class="sd">    the constraints based on the given theorem and find the template value</span>
 <span class="sd">    using the given solver.</span>
 
 <span class="sd">    Parameters</span>
@@ -161,7 +161,7 @@
 <span class="sd">    preconditions : List[DNF]</span>
 <span class="sd">        List of conditions that must be satisfied independent of the horn clauses.</span>
 <span class="sd">    instructions : List[str]</span>
-<span class="sd">        List of instructions that should be added to the smt file.    </span>
+<span class="sd">        List of instructions that should be added to the smt file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template_variables_name</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
@@ -190,7 +190,7 @@
 <div class="viewcode-block" id="PositiveModel.add_paired_constraint">
 <a class="viewcode-back" href="../../polyhorn.PositiveModel.html#polyhorn.PositiveModel.PositiveModel.add_paired_constraint">[docs]</a>
     <span class="k">def</span> <span class="nf">add_paired_constraint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lhs</span><span class="p">:</span> <span class="n">DNF</span><span class="p">,</span> <span class="n">rhs</span><span class="p">:</span> <span class="n">DNF</span><span class="p">,</span> <span class="n">program_variables</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">UnknownVariable</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add set of horn clause constraint for lhs =&gt; rhs</span>
 
 <span class="sd">        Parameters</span>
@@ -232,7 +232,7 @@
 <div class="viewcode-block" id="PositiveModel.get_polynomial">
 <a class="viewcode-back" href="../../polyhorn.PositiveModel.html#polyhorn.PositiveModel.PositiveModel.get_polynomial">[docs]</a>
     <span class="k">def</span> <span class="nf">get_polynomial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">poly_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">program_variables</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">UnknownVariable</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Polynomial</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generate a polynomial from a given string based on the template and</span>
 <span class="sd">        program variable in the class.</span>
 
@@ -256,7 +256,7 @@
 <a class="viewcode-back" href="../../polyhorn.PositiveModel.html#polyhorn.PositiveModel.PositiveModel.get_generated_constraints">[docs]</a>
     <span class="k">def</span> <span class="nf">get_generated_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">DNF</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        This function find the constraint for the list of the class&#39;s horn </span>
+<span class="sd">        This function find the constraint for the list of the class&#39;s horn</span>
 <span class="sd">        clause constraints based on the class configurations.</span>
 
 <span class="sd">        Returns</span>
@@ -270,7 +270,9 @@
             <span class="k">if</span> <span class="n">theorem</span> <span class="o">==</span> <span class="s1">&#39;auto&#39;</span><span class="p">:</span>
                 <span class="n">lhs_linear</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="n">rhs_linear</span> <span class="o">=</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">polynomial</span><span class="o">.</span><span class="n">is_linear</span><span class="p">()</span>
+                <span class="n">deg</span> <span class="o">=</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">polynomial</span><span class="o">.</span><span class="n">get_deg</span><span class="p">()</span>
                 <span class="k">for</span> <span class="n">cons</span> <span class="ow">in</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">deg</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">deg</span><span class="p">,</span> <span class="n">cons</span><span class="o">.</span><span class="n">polynomial</span><span class="o">.</span><span class="n">get_deg</span><span class="p">())</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">cons</span><span class="o">.</span><span class="n">polynomial</span><span class="o">.</span><span class="n">is_linear</span><span class="p">():</span>
                         <span class="n">lhs_linear</span> <span class="o">=</span> <span class="kc">False</span>
                 <span class="k">if</span> <span class="n">lhs_linear</span> <span class="ow">and</span> <span class="n">rhs_linear</span><span class="p">:</span>
@@ -279,6 +281,10 @@
                     <span class="n">theorem</span> <span class="o">=</span> <span class="n">Theorem</span><span class="o">.</span><span class="n">HANDELMAN</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">theorem</span> <span class="o">=</span> <span class="n">Theorem</span><span class="o">.</span><span class="n">PUTINAR</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">degree_of_sat</span> <span class="o">=</span> <span class="n">deg</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">degree_of_nonstrict_unsat</span> <span class="o">=</span> <span class="n">deg</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">degree_of_strict_unsat</span> <span class="o">=</span> <span class="n">deg</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">max_d_of_strict</span> <span class="o">=</span> <span class="n">deg</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">theorem</span> <span class="o">=</span> <span class="n">Theorem</span><span class="p">(</span><span class="n">theorem</span><span class="p">)</span>
 
