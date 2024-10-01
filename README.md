@@ -93,7 +93,7 @@ See `config-example.json` as an example.
 
 ## Citing
 
-If you want to cite PolyHorn, please use the following reference:\
+To cite PolyHorn, please use the following reference:\
 K. Chatterjee, A. K. Goharshady, E. K. Goharshady, M. Karrabi, M. Saadat, D. Zikelic\
 PolyHorn: A Polynomial Horn Clause Solver\
 arXiv 2024, [https://arxiv.org/abs/2408.03796]
