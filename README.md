@@ -76,7 +76,7 @@ The input syntax of PolyHorn follows the SMTLIB syntax:
 
  See `input-example.smt2` as an example. 
 
- ## Config files
+ ## Config files (Optional)
 
  The config file must be in `.json` format containing the following fields:
  - `theorem_name` which is one of `"farkas"`, `"handelman"` or `"putinar"`.
@@ -88,7 +88,7 @@ The input syntax of PolyHorn follows the SMTLIB syntax:
  - `SAT_heuristic` which should be set to `true` if the `Assume-SAT` heuristic should be used.
  - `unsat_core_heuristic` which should be set to `true` if the `UNSAT Core` heuristic should be used. 
 
-The default value is 0 for all integer parameters and `false` for all boolean parameters. 
+The default value is 0 for all integer parameters and `false` for all boolean parameters. Default theorem is set based on the degree of Horn Clauses and default solver is z3. Also, all heuristics are set t false as default.
 
 See `config-example.json` as an example. 
 
