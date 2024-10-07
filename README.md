@@ -30,7 +30,7 @@ chmod +x PolyHorn solver/z3 solver/mathsat
 
 ### Running PolyHorn 
 
-To run PolyHorn on `input-example.smt2` the following command should be executed:
+To run PolyHorn on `input-example.smt2` the following command should be executed (`path/to/polyhorn/main.py` is the path to `main.py` file inside the library):
 
 ```
 python3 path/to/polyhorn/main.py --smt2 input-example.smt2
