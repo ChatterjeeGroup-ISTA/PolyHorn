@@ -2,7 +2,7 @@
 
 PolyHorn is a solver for Polynomial Constrained Horn Clauses (PHC). 
 
-Given an input PHC in SMT-LIB format and an optional config file, PolyHorn tried to find a valuation of the unknown variables in the input such that all the PHCs are satisfied. 
+Given an input PHC in SMT-LIB format and an optional config file, PolyHorn finds a valuation of the unknown variables in the input such that all the PHCs are satisfied. 
 
 
 ## Getting Started
