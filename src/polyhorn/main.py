@@ -28,7 +28,7 @@ def add_default_config(config: dict) -> dict:
         The config dictionary with default values
     """
     default_config = {
-        "SAT_heuristic": False,
+        "SAT_heuristic": True,
         "degree_of_sat": 0,
         "degree_of_nonstrict_unsat": 0,
         "degree_of_strict_unsat": 0,
