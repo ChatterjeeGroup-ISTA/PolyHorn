@@ -40,13 +40,19 @@ where `[polyhorn]` is the directory where PolyHorn is cloned.
 To run PolyHorn on `input-example.smt2` the following command should be executed:
 
 ```
-python3 [polyhorn]/src/polyhorn/main.py --smt2 input-example.smt2
+./PolyHorn input-example.smt2
 ```
 
 To run PolyHorn on `input-example.smt2` with `config-example.json` the following command should be executed:
 
 ```
-python3 path/to/polyhorn/main.py --smt2 input-example.smt2 --config config-example.json
+./PolyHorn input-example.smt2 config-example.json
+```
+
+Alternatively, you can directly run PolyHorn's main python source file as follows:
+
+```
+python3 src/polyhorn/main.py --smt2 input-example.smt2 --config config-example.json
 ```
 
 
