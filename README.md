@@ -21,8 +21,8 @@ pip install polyhorn
 
 ## Standalone tool
 
-To try PolyHorn, first, download `PolyHorn`, `input-example.smt2`, `config-example.json` files, and `solver/` folder from this repository.
-When using the tool via the commandline, you can use the accompanying solvers from the subfolder `solver/`. For this you do not require any installation, however, in order to run PolyHorn, Z3 and MathSAT, this following command should be executed first:
+To try PolyHorn, first, clone this repository.
+When using the tool via the commandline, you can use the accompanying solvers from the subfolder `solver/`. For this you do not require any installation, however, in order to run PolyHorn, Z3 and MathSAT, the following command should be executed first:
 
 ```
 chmod +x PolyHorn solver/z3 solver/mathsat
@@ -31,16 +31,16 @@ chmod +x PolyHorn solver/z3 solver/mathsat
 Also add solvers to PATH:
 
 ```
-export PATH=$PATH:absolute/path/to/solver/folder (e.g. home/aaa/PolyHorn/solver)
+export PATH=$PATH:[polyhorn]/solver
 ```
-
+where `[polyhorn]` is the directory where PolyHorn is cloned.
 
 ### Running PolyHorn 
 
-To run PolyHorn on `input-example.smt2` the following command should be executed (`path/to/polyhorn/main.py` is the path to `main.py` file inside the library):
+To run PolyHorn on `input-example.smt2` the following command should be executed:
 
 ```
-python3 path/to/polyhorn/main.py --smt2 input-example.smt2
+python3 [polyhorn]/src/polyhorn/main.py --smt2 input-example.smt2
 ```
 
 To run PolyHorn on `input-example.smt2` with `config-example.json` the following command should be executed:
