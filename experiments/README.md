@@ -21,7 +21,7 @@ This folder contains all the necessary files for running the experiments describ
 
 ## How to Run Experiments 
 
-To run all the experiments in the paper, one can run `python run_all.py` which runs PolyHorn on the benchmarks in the `benchmarks` folder using their respective config files. This command runs experiments on eby one and you will get the results in `output` folder. However, this command takes a long time (several weeks) to terminate. 
+To run all the experiments in the paper, one can run `python run_all.py` which runs PolyHorn on the benchmarks in the `benchmarks` folder using their respective config files. This command runs experiments one by one and you will get the results in `output` folder. However, this command takes a long time (several weeks) to terminate. 
 For this reason, we have included the commands that should be run for solving each of the benchmarks in the `Outputs-*.csv` files. 
 
 To obtain the figures that are presented in the paper, you can run the following commands: 
