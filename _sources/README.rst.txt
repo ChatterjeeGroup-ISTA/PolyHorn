@@ -1,18 +1,18 @@
 PolyHorn
 ========
 
-PolyHorn is a solver for Polynomial Constrained Horn Clauses (pCHC).
+PolyHorn is a solver for Polynomial Constrained Horn Clauses (PHC).
 
-Given an input pCHC in SMT-LIB format and a config file, PolyHorn tried
+Given an input PHC in SMT-LIB format and a config file, PolyHorn tried
 to find a valuation of the unknown variables in the input such that all
-the pCHCs are satisfied.
+the PHCs are satisfied.
 
 Getting Started
 ---------------
 
 PolyHorn is written in Python and can be run as a standalone tool or as
 a Python library. Either way, the input to PolyHorn is an SMT-LIB
-instance containing the pCHC and a config file specifying the theorem
+instance containing the PHC and a config file specifying the theorem
 and solver to be used.
 
 The tool is tested for Python >=3.9 and requires the installation of: -
@@ -93,7 +93,7 @@ The input syntax of PolyHorn follows the SMTLIB syntax:
 -  ``(declare-const [var name] Real)`` is used for defining new unknown
    variables.
 -  ``(assert phi)`` is used for adding either (i) a quantifier free
-   constraint on the unknown variables, or (ii) a pCHC of the following
+   constraint on the unknown variables, or (ii) a PHC of the following
    form:
 
 ::
@@ -127,7 +127,7 @@ should be specified. This is the only parameter required by Handelman’s
 Positivestellensatz. See [1] appendix E for more details. - In case
 ``putinar`` is chosen for ``theorem_name``, four parameters should be
 specified in the config file: (i) ``degree_of_sat`` the degree of SOS
-polynomials considered when the LHS of pCHCs are assumed satisfying,
+polynomials considered when the LHS of PHC are assumed satisfying,
 (ii) ``degree_of_nonstrict_unsat``, (iii) ``degree_of_strict_unsat`` and
 (iv) ``max_d_of_strict``, for the remaining three degree parameters of
 Putinar’s positivestellensatz. The names are self-explanatory and the
