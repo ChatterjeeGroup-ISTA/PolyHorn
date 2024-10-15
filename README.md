@@ -31,7 +31,7 @@ chmod +x PolyHorn solver/z3 solver/mathsat
 Also add solvers to PATH:
 
 ```
-export PATH=$PATH:./solver
+export PATH=$PATH:absolute/path/to/solver/folder (e.g. home/aaa/PolyHorn/solver)
 ```
 
 
