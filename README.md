@@ -28,6 +28,13 @@ When using the tool via the commandline, you can use the accompanying solvers fr
 chmod +x PolyHorn solver/z3 solver/mathsat
 ```
 
+Also add solvers to PATH:
+
+```
+export PATH=$PATH:./solver
+```
+
+
 ### Running PolyHorn 
 
 To run PolyHorn on `input-example.smt2` the following command should be executed (`path/to/polyhorn/main.py` is the path to `main.py` file inside the library):
