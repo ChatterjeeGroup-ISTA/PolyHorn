@@ -14,7 +14,7 @@ authors = [
   { name="Maximilian Seeliger", email="maximilian.seeliger@tuwien.ac.at" },
   { name="Djordje Zikelic", email="dzikelic@smu.edu.sg" },
 ]
-description = "PolyHorn is a solver for Polynomial Constrained Horn Clauses (pCHC)."
+description = "PolyHorn is a solver for Polynomial Horn Clauses (PHC)."
 readme = "README.md"
 requires-python = ">=3.9"
 classifiers = [
