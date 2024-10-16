@@ -19,6 +19,9 @@ Next, we can install the package using the following command:
 pip install polyhorn
 ```
 
+## Experiments
+The `experiments` folder contains the material to run all the experiments presented in the tool paper. Please see `experiments/README.md` for detailed instructions.
+
 ## Standalone tool
 
 To try PolyHorn, first, clone this repository.
