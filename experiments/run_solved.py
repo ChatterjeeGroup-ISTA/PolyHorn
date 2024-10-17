@@ -24,20 +24,22 @@ def run_commands(file_name):
 
             os.chdir("..")
             os.makedirs("work/", exist_ok=True)
-            start = time.time()
-            output = str(subprocess.check_output(f"timeout 180 {command}", shell=True))
-            process_time = time.time() - start
-            if "unsat" in output: 
-                results[col_name][exp_name] = {'sat': False}
-            elif "sat" in output:
-                results[col_name][exp_name] = {'sat': True, 'time': process_time}
-            else: 
-                results[col_name][exp_name] = {'sat': False}
+            try:
+                start = time.time()
+                output = str(subprocess.check_output(f"timeout 180 {command}", shell=True))
+                process_time = time.time() - start
+                if "unsat" in output:
+                    results[col_name][exp_name] = {'sat': False}
+                elif "sat" in output:
+                    results[col_name][exp_name] = {'sat': True, 'time': process_time}
+                else:
+                    results[col_name][exp_name] = {'sat': False}
+                print(output)
+            except subprocess.CalledProcessError as e:
+                results[col_name][exp_name] = {'sat': None}
+                print('timeout error!')
             print(command)
-            print(output)
-
             os.chdir("experiments/")
-    # print(results)
     return results
 
 
@@ -49,6 +51,7 @@ table_data = [[None] + columns,
               ['None_termination', None, None, None, None, None],
               ['AST', None, None, None, None, None],
               ['Polysynth', None, None, None, None, None]]
+print('\n\n\n=======================================\nResults:\n===========================================\n')
 
 for j in range(len(all_results)):
     for i in range(len(columns)):
@@ -59,11 +62,11 @@ for j in range(len(all_results)):
             if all_results[j][col_name][exp_name]['sat']:
                 count += 1
                 time_sum += all_results[j][col_name][exp_name]['time']
+            elif all_results[j][col_name][exp_name]['sat'] is None:
+                print(exp_name + ' from dataset ' + str(j) + ' and column ' + col_name + ' timed out!')
         if count==0:
             table_data[j+1][i+1] = str(count) + ': ' + "NA"
-        else: 
+        else:
             table_data[j+1][i+1] = str(count) + ': ' + str(round(time_sum/count,2)) + '(s)'
 
 print(tabulate(table_data))
-
-
