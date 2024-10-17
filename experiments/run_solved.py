@@ -62,8 +62,6 @@ for j in range(len(all_results)):
             if all_results[j][col_name][exp_name]['sat']:
                 count += 1
                 time_sum += all_results[j][col_name][exp_name]['time']
-            elif all_results[j][col_name][exp_name]['sat'] is None:
-                print(exp_name + ' from dataset ' + str(j) + ' and column ' + col_name + ' timed out!')
         if count==0:
             table_data[j+1][i+1] = str(count) + ': ' + "NA"
         else:

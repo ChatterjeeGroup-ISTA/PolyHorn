@@ -9,7 +9,7 @@ Given an input PHC in SMT-LIB format and an optional config file, PolyHorn finds
 PolyHorn is written in Python and can be run as a standalone tool or as a Python library. Either way, the input to PolyHorn is an SMT-LIB instance containing the PHC and an optional config file specifying the theorem and solver to be used. 
 
 The tool is tested for Python >=3.9 and requires the installation of:
-- `Z3` many package managers provide Z3 as a package. For example, in Ubuntu, Z3 can be installed using `sudo apt-get install z3`. Otherwise, you can find more information [here](https://github.com/Z3Prover/z3)
+- `Z3` many package managers provide Z3 as a package. For example, in Ubuntu, Z3 can be installed using `apt-get install z3`. Otherwise, you can find more information [here](https://github.com/Z3Prover/z3)
 - `MathSAT` can be downloaded from [here](http://mathsat.fbk.eu/download.html).
 - GNU C library `glibc` and Gnu Multiprecision Library `GMP` are also required.
 - `pysmt` python library.
