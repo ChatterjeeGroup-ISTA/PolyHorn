@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "polyhorn"
-version = "0.0.6"
+version = "0.0.7"
 authors = [  
   { name="Krishnendu Chatterjee", email="krishnendu.chatterjee@ist.ac.at" },
   { name="Amir Kafshdar Goharshady", email="goharshady@cse.ust.hk" },
@@ -29,5 +29,5 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/milad-saadat/PolyHorn"
-Issues = "https://github.com/milad-saadat/PolyHorn/issues"
+Homepage = "https://github.com/ChatterjeeGroup-ISTA/PolyHorn/"
+Issues = "https://github.com/ChatterjeeGroup-ISTA/PolyHorn/issues"
